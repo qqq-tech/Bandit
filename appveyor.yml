@@ -1,5 +1,9 @@
 version: 1.0.{build}
+skip_tags: true
+skip_branch_with_pr: true
 configuration: Release
+only_commits:
+  message: /#build/
 platform:
 - x86
 - x64
@@ -32,13 +36,4 @@ deploy:
   repository: junimiso04/Bandit
   artifact: deploy
   draft: false
-  force_update: false
-- provider: GitHub
-  tag: pre-release-v$(appveyor_build_version)
-  release: Bandit Pre-Release v$(appveyor_build_version)
-  auth_token:
-    secure: rZmLXCATPmL0i2iCF1NAWBxFSGAwR1mL4Rm5HZ0LLR6RTqIUeCSQxNOSwf/N1fsd
-  repository: junimiso04/Bandit
-  artifact: deploy
-  prerelease: true
   force_update: false
