@@ -1,0 +1,111 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Bandit.Views"
+        xmlns:Converters="clr-namespace:Bandit.Converters" x:Class="Bandit.Views.SettingsView"
+        mc:Ignorable="d"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignBackground}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="Settings" Height="500" Width="800" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" ResizeMode="NoResize">
+    <Window.Resources>
+        <Converters:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
+        <Converters:IndexConverter x:Key="IndexConverter"/>
+        <Converters:NullableDateTimeConverter x:Key="NullableDateTimeConverter"/>
+        <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+    </Window.Resources>
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Orientation="Vertical" Margin="20">
+                <!--General Settings-->
+                <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Margin="0 0 0 0" Text="일반"/>
+                <StackPanel Orientation="Vertical" Margin="0 6 0 0" HorizontalAlignment="Left">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}" VerticalAlignment="Center" Width="180" Text="새 글 자동 감시 여부" Opacity=".68"/>
+                        <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}" IsChecked="{Binding IsAutomatic, Mode=TwoWay}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0 6 0 0">
+                        <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}" VerticalAlignment="Center" Width="180" Text="새 글 갱신 대기 시간(분)" Opacity=".68"/>
+                        <Slider Orientation="Horizontal" Width="200" TickFrequency="5" TickPlacement="BottomRight" Minimum="5" Maximum="100" IsEnabled="{Binding IsAutomatic, Mode=OneWay}" Value="{Binding RefreshInterval, Mode=TwoWay}" IsSelectionRangeEnabled="True" />
+                        <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Margin="6 0 0 0" Text="{Binding RefreshInterval, Mode=TwoWay}" Opacity=".68"/>
+                    </StackPanel>
+                    <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Margin="0 6 0 0" Text="※자동으로 새 글 피드를 감시하지 않을 경우에는 사용자가 지정한 시간에만 새 글 피드를 가져옵니다." Opacity=".68"/>
+                </StackPanel>
+
+                <!--Driver Settings-->
+                <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Margin="0 40 0 0" Text="크롬 드라이버"/>
+                <StackPanel Orientation="Vertical" Margin="0 6 0 0" HorizontalAlignment="Left">
+                    <!--Driver Installer Part-->
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}" Width="180" Text="현재 드라이버 버전" Opacity=".68"/>
+                        <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" Text="{Binding CurrentVersion}" Opacity=".68"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0 6 0 0">
+                        <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}" VerticalAlignment="Center" Width="180" Text="사용 가능한 드라이버 버전" Opacity=".68"/>
+                        <ComboBox Style="{StaticResource MaterialDesignComboBox}" VerticalAlignment="Center" Width="200" materialDesign:HintAssist.Hint="Driver Versions" 
+                              ItemsSource="{Binding VersionList}" SelectedValue="{Binding SelectedVersion, Mode=TwoWay}">
+                            <ComboBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel />
+                                </ItemsPanelTemplate>
+                            </ComboBox.ItemsPanel>
+                        </ComboBox>
+                        <Button Style="{StaticResource MaterialDesignOutlinedButton}" VerticalAlignment="Center" Margin="6 0 0 0" Width="100" Command="{Binding ApplyDriverCommand}" Content="적용"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0 20 0 0">
+                        <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}" VerticalAlignment="Center" Width="180" Text="웹 타임아웃 대기 시간(초)" Opacity=".68"/>
+                        <Slider Orientation="Horizontal" Width="200" TickFrequency="5" TickPlacement="BottomRight" Minimum="1" Maximum="100" Value="{Binding TimeOutLimit, Mode=TwoWay}" IsSelectionRangeEnabled="True" />
+                        <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Margin="6 0 0 0" Text="{Binding TimeOutLimit, Mode=TwoWay}" Opacity=".68"/>
+                    </StackPanel>
+
+                    <!--Driver Settings Part-->
+                    <StackPanel Orientation="Horizontal" Margin="0 20 0 0">
+                        <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}" VerticalAlignment="Center" Width="180" Text="헤드리스 모드 사용 여부" Opacity=".68"/>
+                        <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}" IsChecked="{Binding UseHeadless, Mode=TwoWay}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0 6 0 0">
+                        <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}" VerticalAlignment="Center" Width="180" Text="콘솔 창 사용 여부" Opacity=".68"/>
+                        <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}" IsChecked="{Binding UseConsole, Mode=TwoWay}"/>
+                    </StackPanel>
+                    <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Margin="0 6 0 0" Text="※헤드리스 모드를 사용하지 않을 경우 작업이 불안정해질 수 있습니다." Opacity=".68"/>
+                </StackPanel>
+
+                <!--Refresh Times Settings-->
+                <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Margin="0 40 0 0" Text="새 글 갱신 예약 시간"/>
+                <Border BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="1" Margin="0 6 0 0">
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" >
+                        <ListView ItemsSource="{Binding ReservatedTimes, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="300" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                  IsEnabled="{Binding IsAutomatic, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
+                                  SelectedIndex="{Binding SelectedIndex, Mode=OneWayToSource}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn DisplayMemberBinding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}, Converter={StaticResource IndexConverter}}"
+                                                    Header="번호" />
+                                    <GridViewColumn DisplayMemberBinding="{Binding Converter={StaticResource DateTimeToStringConverter}, Mode=OneWay}" Header="시간" />
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </StackPanel>
+                </Border>
+                <StackPanel Orientation="Horizontal" Margin="0 6 0 0">
+                    <materialDesign:TimePicker Style="{StaticResource MaterialDesignTimePicker}" materialDesign:HintAssist.Hint="Time to reservate" Is24Hours="False" Width="200"
+                                               IsEnabled="{Binding IsAutomatic, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
+                                               SelectedTime="{Binding SelectedTime, Converter={StaticResource NullableDateTimeConverter}, Mode=TwoWay}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0 6 0 0">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}" VerticalAlignment="Center" Width="100"
+                            Command="{Binding AddTimeCommand}" IsEnabled="{Binding IsAutomatic, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}" Content="예약 추가"/>
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}" VerticalAlignment="Center" Margin="6 0 0 0" Width="100"
+                            Command="{Binding RemoveTimeCommand}" IsEnabled="{Binding IsAutomatic, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}" Content="예약 제거"/>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
