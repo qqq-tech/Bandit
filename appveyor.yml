@@ -15,7 +15,7 @@ after_build:
 artifacts:
 - path: Bandit_v$(appveyor_build_version)_i386.zip
   name: deploy
-- path: Bandit_v$(appveyor_build_version)_amd64zip
+- path: Bandit_v$(appveyor_build_version)_amd64.zip
   name: deploy
 deploy:
 - provider: GitHub
