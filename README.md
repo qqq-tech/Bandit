@@ -1,5 +1,6 @@
 # Bandit
 [![Build status](https://ci.appveyor.com/api/projects/status/0p305aob0r46febp?svg=true)](https://ci.appveyor.com/project/junimiso04/bandit)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/junimiso04/Bandit)
 
 당신의 멘탈과 더불어 가정의 화목함을 지켜줄 유일한 친구, 노상강도 입니다.
 
