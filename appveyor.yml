@@ -17,6 +17,9 @@ build:
   project: src/Bandit.sln
   verbosity: minimal
 
+# here we are going to override common configuration
+for:
+
 # override settings for `master` branch
 -
   branches:
