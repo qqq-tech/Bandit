@@ -49,7 +49,7 @@ for:
     name: deploy
     
   # override settings for `develop` branches
-  -
+-
   branches:
     only:
       - develop
