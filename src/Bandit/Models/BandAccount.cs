@@ -7,7 +7,7 @@ namespace Bandit.Models
     {
         #region ::Singleton Supports::
 
-        private static BandAccount _instance = null;
+        private static BandAccount _instance;
 
         /// <summary>
         /// 밴드 계정 클래스의 싱글톤 인스턴스를 불러오거나 변경합니다.

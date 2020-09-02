@@ -16,6 +16,7 @@ namespace Bandit.Behaviors
         private static void AutoscrollChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
         {
             var dataGrid = dependencyObject as DataGrid;
+
             if (dataGrid == null)
             {
                 throw new InvalidOperationException("Dependency object is not DataGrid.");
@@ -40,7 +41,9 @@ namespace Bandit.Behaviors
             var handler = new NotifyCollectionChangedEventHandler((sender, eventArgs) => ScrollToEnd(dataGrid));
 
             if (!handlersDict.ContainsKey(dataGrid))
+            {
                 handlersDict.Add(dataGrid, handler);
+            }
 
             ((INotifyCollectionChanged)dataGrid.Items).CollectionChanged += handler;
             ScrollToEnd(dataGrid);
@@ -63,6 +66,7 @@ namespace Bandit.Behaviors
         private static void DataGridOnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
             var dataGrid = (DataGrid)sender;
+
             if (GetAutoscroll(dataGrid))
             {
                 Subscribe(dataGrid);
@@ -72,6 +76,7 @@ namespace Bandit.Behaviors
         private static void DataGridOnUnloaded(object sender, RoutedEventArgs routedEventArgs)
         {
             var dataGrid = (DataGrid)sender;
+
             if (GetAutoscroll(dataGrid))
             {
                 Unsubscribe(dataGrid);

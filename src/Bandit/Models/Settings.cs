@@ -15,7 +15,7 @@ namespace Bandit.Models
     {
         #region ::Singleton Supports::
 
-        private static Settings _instance = null;
+        private static Settings _instance;
 
         /// <summary>
         /// 설정 클래스의 싱글톤 인스턴스를 불러오거나 변경합니다.
