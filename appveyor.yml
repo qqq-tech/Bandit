@@ -1,29 +1,60 @@
 version: 1.0.{build}
+
 skip_tags: true
+
 skip_branch_with_pr: true
+
 configuration: Release
+
 platform:
 - x86
 - x64
+
 before_build:
 - cmd: nuget restore src/Bandit.sln
+
 build:
   project: src/Bandit.sln
   verbosity: minimal
-after_build:
-- ps: "if ($env:PLATFORM -eq \"x86\") {\n    $ArtifactPath = \"Bandit_v\" + $env:APPVEYOR_BUILD_VERSION + \"_i386.zip\" \n    7z a $ArtifactPath $env:APPVEYOR_BUILD_FOLDER\\src\\Bandit\\bin\\x86\\Release\\*.exe $env:APPVEYOR_BUILD_FOLDER\\src\\Bandit\\bin\\x86\\Release\\*.exe.config $env:APPVEYOR_BUILD_FOLDER\\src\\Bandit\\bin\\x86\\Release\\*.dll\n}\n\nif ($env:PLATFORM -eq \"x64\") {\n    $ArtifactPath = \"Bandit_v\" + $env:APPVEYOR_BUILD_VERSION + \"_amd64.zip\" \n    7z a $ArtifactPath $env:APPVEYOR_BUILD_FOLDER\\src\\Bandit\\bin\\x64\\Release\\*.exe $env:APPVEYOR_BUILD_FOLDER\\src\\Bandit\\bin\\x64\\Release\\*.exe.config $env:APPVEYOR_BUILD_FOLDER\\src\\Bandit\\bin\\x64\\Release\\*.dll\n}"
-artifacts:
-- path: Bandit_v$(appveyor_build_version)_i386.zip
-  name: deploy
-- path: Bandit_v$(appveyor_build_version)_amd64.zip
-  name: deploy
-deploy:
-- provider: GitHub
-  tag: release-v$(appveyor_build_version)
-  release: Bandit Release v$(appveyor_build_version)
-  auth_token:
-    secure: rZmLXCATPmL0i2iCF1NAWBxFSGAwR1mL4Rm5HZ0LLR6RTqIUeCSQxNOSwf/N1fsd
-  repository: junimiso04/Bandit
-  artifact: deploy
-  draft: false
-  force_update: false
+  
+only_commits:
+  message: /#build/
+
+# here we are going to override common configuration
+for:
+
+# override settings for `master` branch
+-
+  branches:
+    only:
+      - master
+      
+  configuration: Release
+  
+  deploy:
+  - provider: GitHub
+    tag: release-v$(appveyor_build_version)
+    release: Bandit Release v$(appveyor_build_version)
+    auth_token:
+      secure: rZmLXCATPmL0i2iCF1NAWBxFSGAwR1mL4Rm5HZ0LLR6RTqIUeCSQxNOSwf/N1fsd
+    repository: junimiso04/Bandit
+    artifact: deploy
+    draft: false
+    force_update: false
+  
+  after_build:
+  - ps: "if ($env:PLATFORM -eq \"x86\") {\n    $ArtifactPath = \"Bandit_v\" + $env:APPVEYOR_BUILD_VERSION + \"_i386.zip\" \n    7z a $ArtifactPath $env:APPVEYOR_BUILD_FOLDER\\src\\Bandit\\bin\\x86\\Release\\*.exe $env:APPVEYOR_BUILD_FOLDER\\src\\Bandit\\bin\\x86\\Release\\*.exe.config $env:APPVEYOR_BUILD_FOLDER\\src\\Bandit\\bin\\x86\\Release\\*.dll\n}\n\nif ($env:PLATFORM -eq \"x64\") {\n    $ArtifactPath = \"Bandit_v\" + $env:APPVEYOR_BUILD_VERSION + \"_amd64.zip\" \n    7z a $ArtifactPath $env:APPVEYOR_BUILD_FOLDER\\src\\Bandit\\bin\\x64\\Release\\*.exe $env:APPVEYOR_BUILD_FOLDER\\src\\Bandit\\bin\\x64\\Release\\*.exe.config $env:APPVEYOR_BUILD_FOLDER\\src\\Bandit\\bin\\x64\\Release\\*.dll\n}"
+
+  artifacts:
+  - path: Bandit_v$(appveyor_build_version)_i386.zip
+    name: deploy
+  - path: Bandit_v$(appveyor_build_version)_amd64.zip
+    name: deploy
+    
+  # override settings for `develop` branches
+-
+  branches:
+    only:
+      - develop
+      
+  configuration: Debug
