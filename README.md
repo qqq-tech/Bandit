@@ -1,4 +1,5 @@
 # Bandit
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b3afd7c34f1d4cc8a8e8092015731f92)](https://app.codacy.com/manual/junimiso04/Bandit?utm_source=github.com&utm_medium=referral&utm_content=junimiso04/Bandit&utm_campaign=Badge_Grade_Dashboard)
 [![Build status](https://ci.appveyor.com/api/projects/status/0p305aob0r46febp?svg=true)](https://ci.appveyor.com/project/junimiso04/bandit)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/junimiso04/Bandit)
 
