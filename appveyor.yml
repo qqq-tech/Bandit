@@ -16,6 +16,9 @@ before_build:
 build:
   project: src/Bandit.sln
   verbosity: minimal
+  
+only_commits:
+  message: /#build/
 
 # here we are going to override common configuration
 for:
