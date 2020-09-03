@@ -4,7 +4,7 @@
 
 | |master|develop|
 |------|------|------|
-|Code Grade(Codacy)|![Codacy branch grade](https://img.shields.io/codacy/grade/b3afd7c34f1d4cc8a8e8092015731f92/master?logo=Codacy&logoColor=white&style=flat-square)|![Codacy branch grade](https://img.shields.io/codacy/grade/b3afd7c34f1d4cc8a8e8092015731f92/develop?logo=Codacy&logoColor=white&style=flat-square)|
+|Code Quality(Codacy)|![Codacy branch grade](https://img.shields.io/codacy/grade/b3afd7c34f1d4cc8a8e8092015731f92/master?logo=Codacy&logoColor=white&style=flat-square)|![Codacy branch grade](https://img.shields.io/codacy/grade/b3afd7c34f1d4cc8a8e8092015731f92/develop?logo=Codacy&logoColor=white&style=flat-square)|
 |Build State(AppVeyor)|[![AppVeyor branch](https://img.shields.io/appveyor/build/junimiso04/Bandit/master?logo=AppVeyor&logoColor=white&style=flat-square)](https://ci.appveyor.com/project/junimiso04/bandit)|[![AppVeyor branch](https://img.shields.io/appveyor/build/junimiso04/Bandit/develop?logo=AppVeyor&logoColor=white&style=flat-square)](https://ci.appveyor.com/project/junimiso04/bandit)|
 
 당신의 멘탈과 더불어 가정의 화목함을 지켜줄 유일한 친구, 노상강도 입니다.
@@ -36,8 +36,10 @@
  * 한 게시물에서 여러개의 출석 체크를 처리하기.
  * 여러 게시물이 동시에 입력될 경우에 제일 최근에 작성된 게시물의 출석만 처리되는 오류를 해결하기.
  * 로그인과 로그아웃 기능, 새 글 피드 불러오기 기능, 출석 체크 기능 등의 메소드들을 비동기 처리하기.
+ * 로그인 비밀번호 보안 강화하기.
+ * 트레이 아이콘 전환 기능 추가하기.
  * 코드 최적화 및 주석 정리하기.
- * 추가적인 예외 경우를 찾아낸 후 처리하기.
+ * 추가적인 예외 경우 처리하기.
 
 ## License
 본 레포지토리의 모든 소스 코드는 MIT 라이선스에 의거하여 자유롭게 사용이 가능합니다. (단, 본 레포지토리에서 이용된 제 3자 오픈소스 프로젝트들은 각 프로젝트에 부여된 라이선스를 기반으로 사용이 가능합니다.)
