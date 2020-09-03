@@ -1,10 +1,10 @@
 # Bandit
 ![GitHub](https://img.shields.io/github/license/junimiso04/Bandit?style=flat-square)
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/junimiso04/Bandit)](https://github.com/junimiso04/Bandit/releases)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/junimiso04/Bandit?logo=GitHub&logoColor=White&style=flat-square)
 
 | |master|develop|
 |------|------|------|
-|Code Quality(Codacy)|![Codacy branch grade](https://img.shields.io/codacy/grade/b3afd7c34f1d4cc8a8e8092015731f92/master?logo=Codacy&logoColor=white&style=flat-square)|![Codacy branch grade](https://img.shields.io/codacy/grade/b3afd7c34f1d4cc8a8e8092015731f92/develop?logo=Codacy&logoColor=white&style=flat-square)|
+|Code Quality(Codacy)|[![Codacy branch grade](https://img.shields.io/codacy/grade/b3afd7c34f1d4cc8a8e8092015731f92/master?logo=Codacy&logoColor=white&style=flat-square)](https://app.codacy.com/manual/junimiso04/Bandit/dashboard)|[![Codacy branch grade](https://img.shields.io/codacy/grade/b3afd7c34f1d4cc8a8e8092015731f92/develop?logo=Codacy&logoColor=white&style=flat-square)](https://app.codacy.com/manual/junimiso04/Bandit/dashboard)|
 |Build State(AppVeyor)|[![AppVeyor branch](https://img.shields.io/appveyor/build/junimiso04/Bandit/master?logo=AppVeyor&logoColor=white&style=flat-square)](https://ci.appveyor.com/project/junimiso04/bandit)|[![AppVeyor branch](https://img.shields.io/appveyor/build/junimiso04/Bandit/develop?logo=AppVeyor&logoColor=white&style=flat-square)](https://ci.appveyor.com/project/junimiso04/bandit)|
 
 당신의 멘탈과 더불어 가정의 화목함을 지켜줄 유일한 친구, 노상강도 입니다.
