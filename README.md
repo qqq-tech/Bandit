@@ -1,6 +1,6 @@
 # Bandit
-![GitHub](https://img.shields.io/github/license/junimiso04/Bandit?style=flat-square)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/junimiso04/Bandit?logo=GitHub&logoColor=White&style=flat-square)
+[![GitHub](https://img.shields.io/github/license/junimiso04/Bandit?style=flat-square)](https://github.com/junimiso04/Bandit/blob/master/LICENSE)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/junimiso04/Bandit?logo=GitHub&logoColor=White&style=flat-square)](https://github.com/junimiso04/Bandit/releases)
 
 | |master|develop|
 |------|------|------|
