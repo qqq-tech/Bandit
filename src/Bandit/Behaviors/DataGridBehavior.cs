@@ -11,7 +11,7 @@ namespace Bandit.Behaviors
         public static readonly DependencyProperty AutoscrollProperty = DependencyProperty.RegisterAttached(
             "Autoscroll", typeof(bool), typeof(DataGridBehavior), new PropertyMetadata(default(bool), AutoscrollChangedCallback));
 
-        private static readonly Dictionary<DataGrid, NotifyCollectionChangedEventHandler> handlersDict = new Dictionary<DataGrid, NotifyCollectionChangedEventHandler>();
+        private static readonly Dictionary<DataGrid, NotifyCollectionChangedEventHandler> _handlers = new Dictionary<DataGrid, NotifyCollectionChangedEventHandler>();
 
         private static void AutoscrollChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
         {
@@ -40,9 +40,9 @@ namespace Bandit.Behaviors
         {
             var handler = new NotifyCollectionChangedEventHandler((sender, eventArgs) => ScrollToEnd(dataGrid));
 
-            if (!handlersDict.ContainsKey(dataGrid))
+            if (!_handlers.ContainsKey(dataGrid))
             {
-                handlersDict.Add(dataGrid, handler);
+                _handlers.Add(dataGrid, handler);
             }
 
             ((INotifyCollectionChanged)dataGrid.Items).CollectionChanged += handler;
@@ -52,7 +52,7 @@ namespace Bandit.Behaviors
         private static void Unsubscribe(DataGrid dataGrid)
         {
             NotifyCollectionChangedEventHandler handler;
-            handlersDict.TryGetValue(dataGrid, out handler);
+            _handlers.TryGetValue(dataGrid, out handler);
 
             if (handler == null)
             {
@@ -60,7 +60,7 @@ namespace Bandit.Behaviors
             }
 
             ((INotifyCollectionChanged)dataGrid.Items).CollectionChanged -= handler;
-            handlersDict.Remove(dataGrid);
+            _handlers.Remove(dataGrid);
         }
 
         private static void DataGridOnLoaded(object sender, RoutedEventArgs routedEventArgs)

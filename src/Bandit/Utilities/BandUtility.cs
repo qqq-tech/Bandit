@@ -16,6 +16,9 @@ using System.Windows;
 
 namespace Bandit.Utilities
 {
+    /// <summary>
+    /// 네이버 밴드와 관련된 기능을 제공하는 클래스입니다.
+    /// </summary>
     public class BandUtility
     {
         #region ::Singleton Supports::
@@ -304,15 +307,10 @@ namespace Bandit.Utilities
             // 로그인이 완료되었는지, PIN 인증이 필요한 지의 여부를 확인한다.
             if (_driver.Url.Contains(Settings.URL_EMAIL_LOGIN_PIN))
             {
-                BandAccount.Instance.Identity = identity;
-                BandAccount.Instance.Password = password;
-
                 return LoginResult.RequirePin;
             }
             else
             {
-                BandAccount.Instance.Identity = identity;
-                BandAccount.Instance.Password = password;
                 BandAccount.Instance.Profile.Name = identity;
                 BandAccount.Instance.IsInitialized = true;
 

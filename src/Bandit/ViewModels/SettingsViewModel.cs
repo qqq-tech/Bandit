@@ -138,15 +138,17 @@ namespace Bandit.ViewModels
             }
         }
 
+        private ObservableCollection<DateTime> _reservatedTimes = new ObservableCollection<DateTime>();
+
         public ObservableCollection<DateTime> ReservatedTimes
         {
             get
             {
-                return _settings.ReservatedTimes;
+                return _reservatedTimes;
             }
             set
             {
-                _settings.ReservatedTimes = value;
+                _reservatedTimes = value;
                 RaisePropertyChanged();
             }
         }
@@ -225,6 +227,16 @@ namespace Bandit.ViewModels
             }
         }
 
+        private ICommand _applyTimeCommand;
+
+        public ICommand ApplyTimeCommand
+        {
+            get
+            {
+                return (_applyTimeCommand) ?? (_applyTimeCommand = new DelegateCommand(ApplyTime));
+            }
+        }
+
         #endregion
 
         #region ::Methods::
@@ -251,7 +263,6 @@ namespace Bandit.ViewModels
             {
                 ReservatedTimes.Add(SelectedTime);
                 ReservatedTimes = new ObservableCollection<DateTime>(ReservatedTimes.OrderBy(time => time));
-                Reports.Instance.AddReport(ReportType.Added, $"'{SelectedTime.Hour}:{SelectedTime.Minute}'에 갱신 예약이 추가되었습니다.");
             }
             else
             {
@@ -264,10 +275,15 @@ namespace Bandit.ViewModels
         {
             if (SelectedIndex != -1)
             {
-                Reports.Instance.AddReport(ReportType.Removed, $"'{ReservatedTimes[SelectedIndex].Hour, 2:D2}:{ReservatedTimes[SelectedIndex].Minute, 2:D2}'의 갱신 예약이 제거되었습니다.");
                 ReservatedTimes.RemoveAt(SelectedIndex);
                 CollectionViewSource.GetDefaultView(ReservatedTimes).Refresh(); // 번호 초기화를 위해 컬렉션을 새로고침한다.
             }
+        }
+
+        private void ApplyTime()
+        {
+            Settings.Instance.ReservatedTimes = ReservatedTimes.ToList();
+            Reports.Instance.AddReport(ReportType.Changed, $"갱신 시간 예약 정보가 변경되었습니다.");
         }
 
         #endregion

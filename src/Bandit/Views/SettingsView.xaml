@@ -94,16 +94,18 @@
                         </ListView>
                     </StackPanel>
                 </Border>
-                <StackPanel Orientation="Horizontal" Margin="0 6 0 0">
-                    <materialDesign:TimePicker Style="{StaticResource MaterialDesignTimePicker}" materialDesign:HintAssist.Hint="Time to reservate" Is24Hours="False" Width="200"
+                <StackPanel Orientation="Vertical" Margin="0 6 0 0">
+                    <materialDesign:TimePicker Style="{StaticResource MaterialDesignTimePicker}" materialDesign:HintAssist.Hint="Time to reservate" Is24Hours="False"
                                                IsEnabled="{Binding IsAutomatic, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
                                                SelectedTime="{Binding SelectedTime, Converter={StaticResource NullableDateTimeConverter}, Mode=TwoWay}"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0 6 0 0">
-                    <Button Style="{StaticResource MaterialDesignOutlinedButton}" VerticalAlignment="Center" Width="100"
+                    <StackPanel Orientation="Horizontal" Margin="0 6 0 0">
+                        <Button Style="{StaticResource MaterialDesignOutlinedButton}" VerticalAlignment="Center" Width="100"
                             Command="{Binding AddTimeCommand}" IsEnabled="{Binding IsAutomatic, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}" Content="예약 추가"/>
-                    <Button Style="{StaticResource MaterialDesignOutlinedButton}" VerticalAlignment="Center" Margin="6 0 0 0" Width="100"
+                        <Button Style="{StaticResource MaterialDesignOutlinedButton}" VerticalAlignment="Center" Margin="6 0 0 0" Width="100"
                             Command="{Binding RemoveTimeCommand}" IsEnabled="{Binding IsAutomatic, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}" Content="예약 제거"/>
+                        <Button Style="{StaticResource MaterialDesignOutlinedButton}" VerticalAlignment="Center" Margin="6 0 0 0" Width="100"
+                            Command="{Binding ApplyTimeCommand}" IsEnabled="{Binding IsAutomatic, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}" Content="적용"/>
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

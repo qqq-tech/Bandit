@@ -2,6 +2,9 @@
 
 namespace Bandit.Utilities
 {
+    /// <summary>
+    /// 문자열 구문 분석 기능을 제공하는 확장 클래스입니다.
+    /// </summary>
     public static class Parser
     {
         private static void Resize(ref string[] array)
@@ -12,12 +15,12 @@ namespace Bandit.Utilities
         }
 
         /// <summary>
-        /// 현재 인스턴스를 지정한 두 문자열을 이용하여 파싱하고 그 결과를 반환합니다.
+        /// 현재 인스턴스를 지정한 두 문자열을 이용하여 파싱하고 그 결과를 반환합니다. 단, 해당하는 결과가 많을 경우에는 제일 처음 나타나는 값을 반환합니다.
         /// </summary>
         /// <param name="text">파싱할 문자열입니다.</param>
         /// <param name="strStart">시작 문자열입니다.</param>
         /// <param name="strEnd">종료 문자열입니다.</param>
-        /// <returns>단일 파싱</returns>
+        /// <returns>파싱된 문자열.</returns>
         public static string SingleParse(this string text, string strStart, string strEnd)
         {
             string Source = text;
@@ -28,12 +31,12 @@ namespace Bandit.Utilities
         }
 
         /// <summary>
-        /// 현재 인스턴스를 지정한 두 문자열을 이용하여 역순으로 파싱하고 그 결과를 반환합니다.
+        /// 현재 인스턴스를 지정한 두 문자열을 이용하여 역순으로 파싱하고 그 결과를 반환합니다. 단, 해당하는 결과가 많을 경우에는 제일 처음 나타나는 값을 반환합니다.
         /// </summary>
         /// <param name="text">파싱할 문자열입니다.</param>
         /// <param name="strStart">시작 문자열입니다.</param>
         /// <param name="strEnd">종료 문자열입니다.</param>
-        /// <returns>역순 단일 파싱</returns>
+        /// <returns>파싱된 문자열.</returns>
         public static string LastSingleParse(this string text, string strStart, string strEnd)
         {
             string Source = text;
@@ -49,7 +52,7 @@ namespace Bandit.Utilities
         /// <param name="text">파싱할 문자열입니다.</param>
         /// <param name="strStart">시작 문자열입니다.</param>
         /// <param name="strEnd">종료 문자열입니다.</param>
-        /// <returns>다중 파싱</returns>
+        /// <returns>파싱된 문자열.</returns>
         public static string[] MultipleParse(this string text, string strStart, string strEnd)
         {
             string Source = text;

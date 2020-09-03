@@ -1,10 +1,6 @@
-﻿using Bandit.Entities;
-using Bandit.Utilities;
-using OpenQA.Selenium.Chrome;
+﻿using Bandit.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
 
 namespace Bandit.Models
 {
@@ -29,10 +25,10 @@ namespace Bandit.Models
                     _instance = new Settings();
                     _instance.DriverVersion = new DriverUtility().GetLatestVersion();
                     _instance.IsAutomatic = true;
-                    _instance.RefreshInterval = 2;
-                    _instance.UseHeadless = false;
-                    _instance.UseConsole = true;
-                    _instance.ReservatedTimes = new ObservableCollection<DateTime>();
+                    _instance.RefreshInterval = 5;
+                    _instance.UseHeadless = true;
+                    _instance.UseConsole = false;
+                    _instance.ReservatedTimes = new List<DateTime>();
                     _instance.TimeOutLimit = 10;
                 }
 
@@ -130,7 +126,7 @@ namespace Bandit.Models
         /// <summary>
         /// 예약된 시간 목록을 저장하는 목록입니다.
         /// </summary>
-        public ObservableCollection<DateTime> ReservatedTimes { get; set; }
+        public List<DateTime> ReservatedTimes { get; set; }
 
         #endregion
     }

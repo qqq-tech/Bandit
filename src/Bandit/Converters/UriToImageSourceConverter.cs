@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Windows.Data;
@@ -13,14 +13,17 @@ namespace Bandit.Converters
     {
         #region IValueConverter Members
 
-        public object Convert(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null)
+            {
                 return null;
+            }
 
             if (targetType != typeof(ImageSource))
-                throw new InvalidOperationException("The target must be a bitmap image!");
+            {
+                throw new InvalidOperationException("The target must be a ImageSource!");
+            }
 
             byte[] buffer;
 
@@ -37,13 +40,11 @@ namespace Bandit.Converters
                 image.StreamSource = stream;
                 image.EndInit();
 
-                Debug.WriteLine("Setted");
                 return image;
             }
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotSupportedException();
         }
