@@ -1,6 +1,10 @@
 ﻿using Bandit.Utilities;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 namespace Bandit.Models
 {
@@ -43,6 +47,11 @@ namespace Bandit.Models
         #endregion
 
         #region ::Consts::
+
+        /// <summary>
+        /// 설정 파일의 경로입니다.
+        /// </summary>
+        public const string PATH_SETTINGS = @".\data\settings.json";
 
         /// <summary>
         /// 크롬 드라이버 실행 파일의 경로입니다.
@@ -127,6 +136,37 @@ namespace Bandit.Models
         /// 예약된 시간 목록을 저장하는 목록입니다.
         /// </summary>
         public List<DateTime> ReservatedTimes { get; set; }
+
+        #endregion
+
+        #region ::Formatter::
+
+        public void Serialize(string filePath)
+        {
+            if (!Directory.Exists(Path.GetDirectoryName(filePath)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            }
+
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
+            string jsonString = JsonConvert.SerializeObject(Instance);
+            FileUtility.WriteTextFile(filePath, jsonString, Encoding.UTF8);
+        }
+
+        public void Deserialize(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                return;
+            }
+
+            string jsonString = FileUtility.ReadTextFile(filePath, Encoding.UTF8);
+            Instance = JsonConvert.DeserializeObject<Settings>(jsonString);
+        }
 
         #endregion
     }
