@@ -66,7 +66,7 @@
  * __Selenium.WebDriver__ - Apache License Version 2.0
  * __Selenium.WebDriver.Chromedriver__ - Unlicense
  
-## 문의
+## Contacts
 본 레포지토리의 소스 코드에 대한 문의사항이나 릴리즈 된 프로그램에 대한 버그 정보를 제공하시려면 GitHub Issues(이)나 아래의 이메일을 이용해주시기 바랍니다.
 
  * E-Mail : junimiso04@naver.com
