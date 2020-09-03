@@ -1,5 +1,4 @@
 ﻿using Bandit.Models;
-using HtmlAgilityPack;
 using Ionic.Zip;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -7,16 +6,15 @@ using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace Bandit.Utilities
 {
+    /// <summary>
+    /// 드라이버와 관련된 기능을 제공하는 클래스입니다.
+    /// </summary>
     internal class DriverUtility
     {
         #region ::Version-Related::
@@ -24,7 +22,9 @@ namespace Bandit.Utilities
         public string GetVersion(string driverPath)
         {
             if (!File.Exists(driverPath))
+            {
                 return null;
+            }
 
             IWebDriver driver = new ChromeDriver(driverPath);
             ICapabilities capabilities = ((RemoteWebDriver)driver).Capabilities;
@@ -46,7 +46,9 @@ namespace Bandit.Utilities
                 using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
                 {
                     if (response.StatusCode == HttpStatusCode.OK)
+                    {
                         result = true;
+                    }
 
                     response.Close();
                     response.Dispose();
@@ -79,7 +81,9 @@ namespace Bandit.Utilities
                 XmlNodeList nodes = rootElement.GetElementsByTagName("Key");
 
                 if (nodes == null || nodes.Count <= 0)
+                {
                     return new List<Version>();
+                }
 
                 List<Version> versionList = new List<Version>();
 
@@ -165,12 +169,16 @@ namespace Bandit.Utilities
         public void DecompressFile(string filePath, string targetDirectory)
         {
             if (!File.Exists(filePath))
+            {
                 return;
+            }
 
             try
             {
                 if (!Directory.Exists(targetDirectory))
+                {
                     Directory.CreateDirectory(targetDirectory);
+                }
 
                 using (ZipFile zip = new ZipFile(filePath))
                 {

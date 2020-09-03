@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
 
 namespace Bandit.Entities
 {
@@ -12,8 +7,6 @@ namespace Bandit.Entities
     /// </summary>
     public class UserProfile
     {
-        #region ::Properties::
-
         /// <summary>
         /// 프로필 이미지의 URL 주소를 지정합니다.
         /// </summary>
@@ -23,10 +16,6 @@ namespace Bandit.Entities
         /// 사용자 프로필의 이름을 지정합니다.
         /// </summary>
         public string Name { get; set; }
-
-        #endregion
-
-        #region ::Constructors::
 
         /// <summary>
         /// 새로운 사용자 프로필 인스턴스를 생성합니다.
@@ -43,7 +32,5 @@ namespace Bandit.Entities
             ImageUrl = image;
             Name = name;
         }
-
-        #endregion
     }
 }

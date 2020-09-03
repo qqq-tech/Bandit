@@ -1,4 +1,5 @@
 ﻿using Bandit.Commands;
+using Bandit.Dialogs;
 using Bandit.Entities;
 using Bandit.Models;
 using Bandit.Utilities;

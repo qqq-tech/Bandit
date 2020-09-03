@@ -1,5 +1,4 @@
 ﻿using Bandit.Entities;
-using System;
 using System.Collections.ObjectModel;
 
 namespace Bandit.Models
@@ -11,7 +10,7 @@ namespace Bandit.Models
     {
         #region ::Singleton Supports::
 
-        private static Reports _instance = null;
+        private static Reports _instance;
 
         /// <summary>
         /// 보고서 클래스의 싱글톤 인스턴스를 불러오거나 변경합니다.
@@ -36,16 +35,10 @@ namespace Bandit.Models
 
         #endregion
 
-        #region ::Properties::
-
         /// <summary>
         /// 현재까지 기록된 보고서들의 목록입니다.
         /// </summary>
         public ObservableCollection<Report> RecordedReports { get; set; }
-
-        #endregion
-
-        #region ::Methods::
 
         /// <summary>
         /// 새로운 보고서를 추가합니다.
@@ -64,7 +57,7 @@ namespace Bandit.Models
         /// <param name="content">보고서의 내용을 지정합니다.</param>
         public void AddReportWithDispatcher(ReportType type, string content)
         {
-            App.Current.Dispatcher.Invoke(delegate // <--- HERE
+            App.Current.Dispatcher.Invoke(delegate
             {
                 RecordedReports.Add(new Report(type, content));
             });
@@ -77,7 +70,5 @@ namespace Bandit.Models
         {
             RecordedReports.Clear();
         }
-
-        #endregion
     }
 }

@@ -5,9 +5,8 @@ namespace Bandit.Commands
 {
     public class DelegateCommand : ICommand
     {
-
-        private readonly Func<bool> canExecute;
-        private readonly Action execute;
+        private readonly Func<bool> _canExecute;
+        private readonly Action _execute;
 
         /// <summary>
         /// Initializes a new instance of the DelegateCommand class.
@@ -15,6 +14,7 @@ namespace Bandit.Commands
         /// <param name="execute">indicate an execute function</param>
         public DelegateCommand(Action execute) : this(execute, null)
         {
+
         }
 
         /// <summary>
@@ -24,8 +24,8 @@ namespace Bandit.Commands
         /// <param name="canExecute">can execute function</param>
         public DelegateCommand(Action execute, Func<bool> canExecute)
         {
-            this.execute = execute;
-            this.canExecute = canExecute;
+            _execute = execute;
+            _canExecute = canExecute;
         }
         /// <summary>
         /// can executes event handler
@@ -39,11 +39,11 @@ namespace Bandit.Commands
         /// <returns>can execute or not</returns>
         public bool CanExecute(object o)
         {
-            if (this.canExecute == null)
+            if (_canExecute == null)
             {
                 return true;
             }
-            return this.canExecute();
+            return _canExecute();
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Bandit.Commands
         /// <param name="o">parameter by default of icomand interface</param>
         public void Execute(object o)
         {
-            this.execute();
+            _execute();
         }
 
         /// <summary>
@@ -60,10 +60,7 @@ namespace Bandit.Commands
         /// </summary>
         public void RaiseCanExecuteChanged()
         {
-            if (this.CanExecuteChanged != null)
-            {
-                this.CanExecuteChanged(this, EventArgs.Empty);
-            }
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

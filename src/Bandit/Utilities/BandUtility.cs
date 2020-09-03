@@ -16,11 +16,14 @@ using System.Windows;
 
 namespace Bandit.Utilities
 {
+    /// <summary>
+    /// 네이버 밴드와 관련된 기능을 제공하는 클래스입니다.
+    /// </summary>
     public class BandUtility
     {
         #region ::Singleton Supports::
 
-        private static BandUtility _instance = null;
+        private static BandUtility _instance;
 
         /// <summary>
         /// 보고서 클래스의 싱글톤 인스턴스를 불러오거나 변경합니다.
@@ -46,7 +49,6 @@ namespace Bandit.Utilities
 
         #region ::Fields::
 
-        private ChromeOptions _options = null;
         private ChromeDriverService _driverService = null;
         private ChromeDriver _driver = null;
         private WebDriverWait _wait;
@@ -60,7 +62,9 @@ namespace Bandit.Utilities
             get
             {
                 if (_driverService == null)
+                {
                     return false;
+                }
 
                 return _driverService.IsRunning;
             }
@@ -71,7 +75,9 @@ namespace Bandit.Utilities
             get
             {
                 if (_driverService == null)
+                {
                     return -1;
+                }
 
                 return _driverService.ProcessId;
             }
@@ -102,14 +108,16 @@ namespace Bandit.Utilities
                     _driverService = ChromeDriverService.CreateDefaultService(Directory.GetCurrentDirectory(), driverPath);
 
                     if (!Settings.Instance.UseConsole)
+                    {
                         _driverService.HideCommandPromptWindow = true; // 콘솔 사용 여부를 지정한다.
+                    }
 
                     // 크롬 설정을 초기화한다.
-                    _options = new ChromeOptions();
-                    _options.AddArguments($"user-data-dir={Directory.GetCurrentDirectory()}/data/profile"); // 사용자 데이터(쿠키)가 저장될 디렉토리를 지정한다.
-                    _options.AddArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36");
+                    ChromeOptions options = new ChromeOptions();
+                    options.AddArguments($"user-data-dir={Directory.GetCurrentDirectory()}/data/profile"); // 사용자 데이터(쿠키)가 저장될 디렉토리를 지정한다.
+                    options.AddArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36");
 
-                    _options.AddUserProfilePreference($"profile", new
+                    options.AddUserProfilePreference($"profile", new
                     {
                         default_content_setting_values = new
                         {
@@ -139,15 +147,16 @@ namespace Bandit.Utilities
                             durable_storage = 2
                         }
                     });
+
                     if (Settings.Instance.UseHeadless)
                     {
-                        _options.AddArgument("headless");
-                        _options.AddArgument("window-size=1920x1080");
-                        _options.AddArgument("disable-gpu");
+                        options.AddArgument("headless");
+                        options.AddArgument("window-size=1920x1080");
+                        options.AddArgument("disable-gpu");
                     }
 
                     // 크롬 드라이버를 초기화한다.
-                    _driver = new ChromeDriver(_driverService, _options);
+                    _driver = new ChromeDriver(_driverService, options);
                     _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(Settings.Instance.TimeOutLimit); // 암시적 타임아웃 대기 시간 지정.
                     _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(Settings.Instance.TimeOutLimit); // 페이지 타임아웃 대기 시간 지정.
 
@@ -230,14 +239,14 @@ namespace Bandit.Utilities
             _driver.Navigate().GoToUrl(Settings.URL_EMAIL_LOGIN_ID);
 
             // 아이디 입력을 위한 대리자를 선언 및 초기화한다.
-            Func<IWebDriver, bool> identityTask = new Func<IWebDriver, bool>((IWebDriver Web) =>
+            Func<IWebDriver, bool> identityTask = new Func<IWebDriver, bool>((web) =>
             {
                 try
                 {
-                    IWebElement element = Web.FindElement(By.Id("input_email"));
+                    IWebElement element = web.FindElement(By.Id("input_email"));
                     element.SendKeys(identity);
 
-                    element = Web.FindElement(By.XPath("//*[@id='email_login_form']/button"));
+                    element = web.FindElement(By.XPath("//*[@id='email_login_form']/button"));
                     element.Click();
 
                     return true;
@@ -251,7 +260,9 @@ namespace Bandit.Utilities
 
             // ID 입력 완료 대기.
             if (!_wait.Until(identityTask))
+            {
                 return LoginResult.IdentityFailure;
+            }
 
             // 페이지 전환 여부를 통해 ID 일치 여부를 확인한다.
             if (_driver.Url.Contains(Settings.URL_EMAIL_LOGIN_ID))
@@ -261,14 +272,14 @@ namespace Bandit.Utilities
             }
 
             // 아이디 입력을 위한 대리자를 선언 및 초기화한다.
-            Func<IWebDriver, bool> passwordTask = new Func<IWebDriver, bool>((IWebDriver Web) =>
+            Func<IWebDriver, bool> passwordTask = new Func<IWebDriver, bool>((web) =>
             {
                 try
                 {
-                    IWebElement element = Web.FindElement(By.Id("pw"));
+                    IWebElement element = web.FindElement(By.Id("pw"));
                     element.SendKeys(password);
 
-                    element = Web.FindElement(By.XPath("//*[@id='email_password_login_form']/button"));
+                    element = web.FindElement(By.XPath("//*[@id='email_password_login_form']/button"));
                     element.Click();
 
                     return true;
@@ -282,7 +293,9 @@ namespace Bandit.Utilities
 
             // PW 입력 완료 대기.
             if (!_wait.Until(passwordTask))
+            {
                 return LoginResult.PasswordFailure;
+            }
 
             // 페이지 전환 여부를 통해 PW 일치 여부를 확인한다.
             if (_driver.Url.Contains(Settings.URL_EMAIL_LOGIN_PW))
@@ -294,15 +307,10 @@ namespace Bandit.Utilities
             // 로그인이 완료되었는지, PIN 인증이 필요한 지의 여부를 확인한다.
             if (_driver.Url.Contains(Settings.URL_EMAIL_LOGIN_PIN))
             {
-                BandAccount.Instance.Identity = identity;
-                BandAccount.Instance.Password = password;
-
                 return LoginResult.RequirePin;
             }
             else
             {
-                BandAccount.Instance.Identity = identity;
-                BandAccount.Instance.Password = password;
                 BandAccount.Instance.Profile.Name = identity;
                 BandAccount.Instance.IsInitialized = true;
 
@@ -324,18 +332,18 @@ namespace Bandit.Utilities
             bool result = false;
 
             // PIN 입력을 위한 대리자를 선언 및 초기화한다.
-            Func<IWebDriver, bool> pinTask = new Func<IWebDriver, bool>((IWebDriver Web) =>
+            Func<IWebDriver, bool> pinTask = new Func<IWebDriver, bool>((web) =>
             {
                 try
                 {
-                    IWebElement element = Web.FindElement(By.Id("code"));
+                    IWebElement element = web.FindElement(By.Id("code"));
                     element.Clear();
                     element.SendKeys(pin);
 
-                    element = Web.FindElement(By.Id("trust"));
+                    element = web.FindElement(By.Id("trust"));
                     element.Click();
 
-                    element = Web.FindElement(By.XPath("//*[@id='inputForm']/button[1]"));
+                    element = web.FindElement(By.XPath("//*[@id='inputForm']/button[1]"));
                     element.Click();
 
                     return true;
@@ -348,7 +356,9 @@ namespace Bandit.Utilities
             });
 
             if (!_wait.Until(pinTask))
+            {
                 return false;
+            }
 
             Func<IWebDriver, bool> pinValidTask = new Func<IWebDriver, bool>((IWebDriver Web) =>
             {
@@ -367,9 +377,13 @@ namespace Bandit.Utilities
             try
             {
                 if (_wait.Until(pinValidTask))
+                {
                     result = true;
+                }
                 else
+                {
                     result = false;
+                }
             }
             catch (WebDriverTimeoutException)
             {
@@ -409,14 +423,14 @@ namespace Bandit.Utilities
 
                 _driver.Navigate().GoToUrl(Settings.URL_BAND);
 
-                Func<IWebDriver, bool> profileImageTask = new Func<IWebDriver, bool>((IWebDriver Web) =>
+                Func<IWebDriver, bool> profileImageTask = new Func<IWebDriver, bool>((web) =>
                 {
                     try
                     {
                         new WebDriverWait(_driver, TimeSpan.FromSeconds(Settings.Instance.TimeOutLimit)).Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("//span[@class='profileInner']")));
 
                         HtmlDocument document = new HtmlDocument();
-                        document.LoadHtml(Web.PageSource);
+                        document.LoadHtml(web.PageSource);
 
                         HtmlNode profileImage = document.DocumentNode.SelectSingleNode("//span[@class='profileInner']");
 
@@ -462,18 +476,22 @@ namespace Bandit.Utilities
                 }
 
                 if (_driver.Url == Settings.URL_FEEDS_PAGE)
+                {
                     _driver.Navigate().Refresh();
+                }
                 else
+                {
                     _driver.Navigate().GoToUrl(Settings.URL_FEEDS_PAGE);
+                }
 
-                Func<IWebDriver, HtmlDocument> postTask = new Func<IWebDriver, HtmlDocument>((IWebDriver Web) =>
+                Func<IWebDriver, HtmlDocument> postTask = new Func<IWebDriver, HtmlDocument>((web) =>
                 {
                     try
                     {
                         new WebDriverWait(_driver, TimeSpan.FromSeconds(Settings.Instance.TimeOutLimit)).Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("//div[@class='_feedListRegion']")));
 
                         HtmlDocument document = new HtmlDocument();
-                        document.LoadHtml(Web.PageSource);
+                        document.LoadHtml(web.PageSource);
                         return document;
                     }
                     catch (NoSuchElementException ex)
@@ -532,14 +550,14 @@ namespace Bandit.Utilities
 
                 _driver.Navigate().GoToUrl(url);
 
-                Func<IWebDriver, HtmlDocument> postTask = new Func<IWebDriver, HtmlDocument>((IWebDriver Web) =>
+                Func<IWebDriver, HtmlDocument> postTask = new Func<IWebDriver, HtmlDocument>((web) =>
                 {
                     try
                     {
                         new WebDriverWait(_driver, TimeSpan.FromSeconds(Settings.Instance.TimeOutLimit)).Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("//div[@class='postMain']")));
 
                         HtmlDocument document = new HtmlDocument();
-                        document.LoadHtml(Web.PageSource);
+                        document.LoadHtml(web.PageSource);
                         return document;
                     }
                     catch (NoSuchElementException ex)
@@ -563,11 +581,11 @@ namespace Bandit.Utilities
                 string attendeeId = document.DocumentNode.SelectSingleNode("//label[@class='etc']").Attributes["for"].Value;
 
                 // 아이디 입력을 위한 대리자를 선언 및 초기화한다.
-                Func<IWebDriver, bool> identityTask = new Func<IWebDriver, bool>((IWebDriver Web) =>
+                Func<IWebDriver, bool> identityTask = new Func<IWebDriver, bool>((web) =>
                 {
                     try
                     {
-                        IWebElement element = Web.FindElement(By.Id(attendeeId));
+                        IWebElement element = web.FindElement(By.Id(attendeeId));
                         element.Click();
 
                         return true;
@@ -581,7 +599,9 @@ namespace Bandit.Utilities
 
                 // ID 입력 완료 대기.
                 if (!_wait.Until(identityTask))
+                {
                     return;
+                }
 
                 string postTitle = document.DocumentNode.SelectSingleNode("//div[@class='item -attendance']").SelectSingleNode("//p[@class='addTitle']").InnerText;
                 Reports.Instance.AddReportWithDispatcher(ReportType.Complete, $"'{postTitle}' 출석 처리를 완료했습니다.");

@@ -2,6 +2,9 @@
 
 namespace Bandit.Entities
 {
+    /// <summary>
+    /// 보고할 정보를 저장하는 클래스입니다.
+    /// </summary>
     public class Report
     {
         /// <summary>

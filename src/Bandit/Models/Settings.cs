@@ -1,10 +1,10 @@
-﻿using Bandit.Entities;
-using Bandit.Utilities;
-using OpenQA.Selenium.Chrome;
+﻿using Bandit.Utilities;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
+using System.Text;
 
 namespace Bandit.Models
 {
@@ -15,7 +15,7 @@ namespace Bandit.Models
     {
         #region ::Singleton Supports::
 
-        private static Settings _instance = null;
+        private static Settings _instance;
 
         /// <summary>
         /// 설정 클래스의 싱글톤 인스턴스를 불러오거나 변경합니다.
@@ -29,10 +29,10 @@ namespace Bandit.Models
                     _instance = new Settings();
                     _instance.DriverVersion = new DriverUtility().GetLatestVersion();
                     _instance.IsAutomatic = true;
-                    _instance.RefreshInterval = 2;
-                    _instance.UseHeadless = false;
-                    _instance.UseConsole = true;
-                    _instance.ReservatedTimes = new ObservableCollection<DateTime>();
+                    _instance.RefreshInterval = 5;
+                    _instance.UseHeadless = true;
+                    _instance.UseConsole = false;
+                    _instance.ReservatedTimes = new List<DateTime>();
                     _instance.TimeOutLimit = 10;
                 }
 
@@ -47,6 +47,11 @@ namespace Bandit.Models
         #endregion
 
         #region ::Consts::
+
+        /// <summary>
+        /// 설정 파일의 경로입니다.
+        /// </summary>
+        public const string PATH_SETTINGS = @".\data\settings.json";
 
         /// <summary>
         /// 크롬 드라이버 실행 파일의 경로입니다.
@@ -130,7 +135,38 @@ namespace Bandit.Models
         /// <summary>
         /// 예약된 시간 목록을 저장하는 목록입니다.
         /// </summary>
-        public ObservableCollection<DateTime> ReservatedTimes { get; set; }
+        public List<DateTime> ReservatedTimes { get; set; }
+
+        #endregion
+
+        #region ::Formatter::
+
+        public void Serialize(string filePath)
+        {
+            if (!Directory.Exists(Path.GetDirectoryName(filePath)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            }
+
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
+            string jsonString = JsonConvert.SerializeObject(Instance);
+            FileUtility.WriteTextFile(filePath, jsonString, Encoding.UTF8);
+        }
+
+        public void Deserialize(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                return;
+            }
+
+            string jsonString = FileUtility.ReadTextFile(filePath, Encoding.UTF8);
+            Instance = JsonConvert.DeserializeObject<Settings>(jsonString);
+        }
 
         #endregion
     }

@@ -170,7 +170,7 @@
     <Compile Include="Views\BanditView.xaml.cs">
       <DependentUpon>BanditView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CompleteDialog.xaml.cs">
+    <Compile Include="Dialogs\CompleteDialog.xaml.cs">
       <DependentUpon>CompleteDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\DriverInstallerView.xaml.cs">
@@ -179,10 +179,10 @@
     <Compile Include="Views\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PinInputDialog.xaml.cs">
+    <Compile Include="Dialogs\PinInputDialog.xaml.cs">
       <DependentUpon>PinInputDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ProgressDialog.xaml.cs">
+    <Compile Include="Dialogs\ProgressDialog.xaml.cs">
       <DependentUpon>ProgressDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsView.xaml.cs">
@@ -224,7 +224,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\CompleteDialog.xaml">
+    <Page Include="Dialogs\CompleteDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -236,11 +236,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PinInputDialog.xaml">
+    <Page Include="Dialogs\PinInputDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ProgressDialog.xaml">
+    <Page Include="Dialogs\ProgressDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
