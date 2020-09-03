@@ -34,6 +34,7 @@
 
 ## Manual
 [GitHub Releases](https://github.com/junimiso04/Bandit/releases)을(를) 통해 Bandit의 최신 릴리즈를 다운로드하실 수 있습니다.
+ * Bandit은(는) Windows 7 서비스 팩 1 이후 버전의 Windows 환경에서만 사용할 수 있습니다.
  * 32비트 시스템에서는 **Bandit_(릴리즈 버전)_i386.zip**을(를), 64비트 시스템에서는 **Bandit_(릴리즈 버전)_amd64.zip**을(를) 다운로드 해주시기 바랍니다.
  * 프로그램을 사용하시려면 배포 패키지의 압축을 해제하시고 __Bandit.exe__(을)를 실행하십시오.
  
