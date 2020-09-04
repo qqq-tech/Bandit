@@ -4,6 +4,9 @@ using Bandit.Entities;
 using Bandit.Models;
 using Bandit.Utilities;
 using Bandit.Views;
+using System;
+using System.Runtime.InteropServices;
+using System.Security;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -48,9 +51,9 @@ namespace Bandit.ViewModels
             }
         }
 
-        private string _password = string.Empty;
+        private SecureString _password = new SecureString();
 
-        public string Password
+        public SecureString Password
         {
             get
             {
@@ -148,6 +151,8 @@ namespace Bandit.ViewModels
             return regex.IsMatch(input);
         }
 
+
+
         private void LogIn()
         {
             Dialog = new ProgressDialog();
@@ -160,7 +165,10 @@ namespace Bandit.ViewModels
                 return;
             }
 
-            if (!IsValidPassword(Password))
+            IntPtr pStr = Marshal.SecureStringToCoTaskMemUnicode(Password);
+            string password = Marshal.PtrToStringUni(pStr);
+
+            if (!IsValidPassword(password))
             {
                 MessageBox.Show("비밀번호는 8자 이상, 20자 이하의 영문과 숫자, 특수기호의 나열로 구성되어야 합니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 IsOpenDialog = false;
@@ -170,7 +178,10 @@ namespace Bandit.ViewModels
             if (!_bandUtility.IsRunning)
                 _bandUtility.Start();
 
-            var result = _bandUtility.Login(Identity, Password);
+            var result = _bandUtility.Login(Identity, password);
+
+            // SecureString 메모리 할당 해제.
+            Marshal.ZeroFreeCoTaskMemUnicode(pStr);
 
             if (result == LoginResult.IdentityFailure)
             {
@@ -205,7 +216,7 @@ namespace Bandit.ViewModels
 
         private void PinCertificate()
         {
-            bool result = _bandUtility.CertifyPin(Pin);
+            bool result = _bandUtility.CertifyPin(Identity, Pin);
 
             if (!result)
             {

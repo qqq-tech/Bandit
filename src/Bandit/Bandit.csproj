@@ -139,6 +139,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Behaviors\DataGridBehavior.cs" />
+    <Compile Include="Behaviors\PasswordBoxBehavior.cs" />
     <Compile Include="Commands\DelegateCommand.cs" />
     <Compile Include="Converters\DateTimeToStringConverter.cs" />
     <Compile Include="Converters\IndexConverter.cs" />
