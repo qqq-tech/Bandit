@@ -1,10 +1,12 @@
 ﻿<Window x:Class="Bandit.Views.LoginView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:behaviors="clr-namespace:Bandit.Behaviors"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Bandit.Views"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -33,20 +35,22 @@
                             </StackPanel>
                         </materialDesign:HintAssist.Hint>
                     </TextBox>
-                    <TextBox VerticalAlignment="Center" Margin="0 6 0 0"
+                    <PasswordBox VerticalAlignment="Center" Margin="0 6 0 0"
                              materialDesign:HintAssist.Foreground="LimeGreen" materialDesign:TextFieldAssist.UnderlineBrush="LimeGreen"
-                             materialDesign:TextFieldAssist.HasClearButton="True"
-                             Text="{Binding Password, Mode=TwoWay}">
-                        <TextBox.InputBindings>
+                             materialDesign:TextFieldAssist.HasClearButton="True">
+                        <i:Interaction.Behaviors>
+                            <behaviors:PasswordBoxBehavior BoundPassword="{Binding Password, Mode=OneWayToSource}" />
+                        </i:Interaction.Behaviors>
+                        <PasswordBox.InputBindings>
                             <KeyBinding Command="{Binding LogInCommand}" Key="Enter" />
-                        </TextBox.InputBindings>
+                        </PasswordBox.InputBindings>
                         <materialDesign:HintAssist.Hint>
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="AccountKeyOutline" />
                                 <TextBlock Margin="4 0 0 0" Text="Password"/>
                             </StackPanel>
                         </materialDesign:HintAssist.Hint>
-                    </TextBox>
+                    </PasswordBox>
                     
                     <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="※이메일 계정만 사용 가능합니다." Opacity=".50"/>
                     <Button Style="{StaticResource MaterialDesignOutlinedButton}" BorderBrush="LimeGreen" Foreground="LimeGreen" Margin="0 10 0 0"

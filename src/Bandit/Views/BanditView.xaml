@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Bandit.Views"
         xmlns:behaviors="clr-namespace:Bandit.Behaviors"
-        xmlns:Converters="clr-namespace:Bandit.Converters" x:Class="Bandit.Views.BanditView"
+        xmlns:converters="clr-namespace:Bandit.Converters" x:Class="Bandit.Views.BanditView"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -17,13 +17,13 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         Title="Bandit" MinHeight="600" MinWidth="1000" Height="600" Width="1000" WindowStartupLocation="CenterScreen">
     <Window.Resources>
-        <Converters:TaskStateToSolidBrushConverter x:Key="TaskStateToSolidBrushConverter"/>
-        <Converters:UriToImageSourceConverter x:Key="UriToBitmapImageConverter"/>
+        <converters:TaskStateToSolidBrushConverter x:Key="TaskStateToSolidBrushConverter"/>
+        <converters:UriToImageSourceConverter x:Key="UriToBitmapImageConverter"/>
         <!--Converters Declaration-->
-        <Converters:TaskStateToIsEnabledConverter x:Key="TaskStateToIsEnabledConverter"/>
-        <Converters:TaskStateToPackIconKindConverter x:Key="TaskStateToPackIconKindConverter"/>
-        <Converters:TaskStateToDescriptionConverter x:Key="TaskStateToDescriptionConverter"/>
-        <Converters:TaskStateToStatusConverter x:Key="TaskStateToStatusConverter"/>
+        <converters:TaskStateToIsEnabledConverter x:Key="TaskStateToIsEnabledConverter"/>
+        <converters:TaskStateToPackIconKindConverter x:Key="TaskStateToPackIconKindConverter"/>
+        <converters:TaskStateToDescriptionConverter x:Key="TaskStateToDescriptionConverter"/>
+        <converters:TaskStateToStatusConverter x:Key="TaskStateToStatusConverter"/>
     </Window.Resources>
     <Grid>
         <!--Grid Row Definitions of Main Frame-->

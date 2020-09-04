@@ -320,7 +320,7 @@ namespace Bandit.Utilities
             }
         }
 
-        public bool CertifyPin(string pin)
+        public bool CertifyPin(string identity, string pin)
         {
             if (!IsRunning)
             {
@@ -398,6 +398,7 @@ namespace Bandit.Utilities
             }
             else
             {
+                BandAccount.Instance.Profile.Name = identity;
                 BandAccount.Instance.IsInitialized = true;
 
                 LoadProfileImage();
