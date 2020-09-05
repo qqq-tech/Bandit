@@ -577,17 +577,26 @@ namespace Bandit.Utilities
                     return;
                 }
 
-                // 피드 파싱.
-                HtmlNode attendanceNode = document.DocumentNode.SelectSingleNode("//div[@class='postMain']").SelectSingleNode("//div[@data-viewname='DPostAttendanceCheckView']");
-                string attendeeId = document.DocumentNode.SelectSingleNode("//label[@class='etc']").Attributes["for"].Value;
+                // 출석 목록 파싱.
+                HtmlNode[] attendanceNodes = document.DocumentNode.SelectSingleNode("//div[@class='postMain']").SelectNodes("//div[@data-viewname='DPostAttendanceCheckView']").ToArray();
+                List<string> attendeeIdList = new List<string>();
 
-                // 아이디 입력을 위한 대리자를 선언 및 초기화한다.
-                Func<IWebDriver, bool> identityTask = new Func<IWebDriver, bool>((web) =>
+                for (int index = 0; index < attendanceNodes.Length; index++)
+                {
+                    string id = attendanceNodes[index].SelectSingleNode("//label[@class='etc']").Attributes["for"].Value;
+                    attendeeIdList.Add(id);
+                }
+
+                // 출석 체크를 위한 대리자를 선언 및 초기화한다.
+                Func<IWebDriver, bool> attendanceTask = new Func<IWebDriver, bool>((web) =>
                 {
                     try
                     {
-                        IWebElement element = web.FindElement(By.Id(attendeeId));
-                        element.Click();
+                        foreach (string attendeeId in attendeeIdList)
+                        {
+                            IWebElement element = web.FindElement(By.Id(attendeeId));
+                            element.Click();
+                        }
 
                         return true;
                     }
@@ -598,8 +607,8 @@ namespace Bandit.Utilities
                     }
                 });
 
-                // ID 입력 완료 대기.
-                if (!_wait.Until(identityTask))
+                // 출석 체크 완료 대기.
+                if (!_wait.Until(attendanceTask))
                 {
                     return;
                 }

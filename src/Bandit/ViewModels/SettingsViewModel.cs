@@ -4,6 +4,7 @@ using Bandit.Models;
 using Bandit.Utilities;
 using Bandit.Views;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -187,10 +188,23 @@ namespace Bandit.ViewModels
 
         #region ::Constructors::
 
+        private ObservableCollection<DateTime> ListToObservableCollection(List<DateTime> list)
+        {
+            ObservableCollection<DateTime> collection = new ObservableCollection<DateTime>();
+            
+            foreach (DateTime time in list)
+            {
+                collection.Add(time);
+            }
+
+            return collection;
+        }
+
         public SettingsViewModel()
         {
             _settings = Settings.Instance;
             VersionList = new ObservableCollection<Version>(_utility.GetVersionList());
+            ReservatedTimes = ListToObservableCollection(_settings.ReservatedTimes);
         }
 
         #endregion
@@ -227,16 +241,6 @@ namespace Bandit.ViewModels
             }
         }
 
-        private ICommand _applyTimeCommand;
-
-        public ICommand ApplyTimeCommand
-        {
-            get
-            {
-                return (_applyTimeCommand) ?? (_applyTimeCommand = new DelegateCommand(ApplyTime));
-            }
-        }
-
         #endregion
 
         #region ::Methods::
@@ -263,6 +267,9 @@ namespace Bandit.ViewModels
             {
                 ReservatedTimes.Add(SelectedTime);
                 ReservatedTimes = new ObservableCollection<DateTime>(ReservatedTimes.OrderBy(time => time));
+                Settings.Instance.ReservatedTimes = ReservatedTimes.ToList();
+
+                Reports.Instance.AddReport(ReportType.Added, $"'{SelectedTime.Hour}:{SelectedTime.Minute}'에 갱신 예약이 추가되었습니다.");
             }
             else
             {
@@ -275,15 +282,13 @@ namespace Bandit.ViewModels
         {
             if (SelectedIndex != -1)
             {
+                DateTime selectedTime = ReservatedTimes[SelectedIndex];
                 ReservatedTimes.RemoveAt(SelectedIndex);
                 CollectionViewSource.GetDefaultView(ReservatedTimes).Refresh(); // 번호 초기화를 위해 컬렉션을 새로고침한다.
-            }
-        }
+                Settings.Instance.ReservatedTimes = ReservatedTimes.ToList();
 
-        private void ApplyTime()
-        {
-            Settings.Instance.ReservatedTimes = ReservatedTimes.ToList();
-            Reports.Instance.AddReport(ReportType.Changed, $"갱신 시간 예약 정보가 변경되었습니다.");
+                Reports.Instance.AddReport(ReportType.Removed, $"'{selectedTime.Hour,2:D2}:{selectedTime.Minute,2:D2}'의 갱신 예약이 제거되었습니다.");
+            }
         }
 
         #endregion
