@@ -15,11 +15,11 @@
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignBackground}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="Bandit" MinHeight="600" MinWidth="1000" Height="600" Width="1000" WindowStartupLocation="CenterScreen">
+        Title="Bandit" MinHeight="600" MinWidth="1000" Height="600" Width="1000" WindowStartupLocation="CenterScreen" Closing="OnClosing">
     <Window.Resources>
+        <!--Converters Declaration-->
         <converters:TaskStateToSolidBrushConverter x:Key="TaskStateToSolidBrushConverter"/>
         <converters:UriToImageSourceConverter x:Key="UriToBitmapImageConverter"/>
-        <!--Converters Declaration-->
         <converters:TaskStateToIsEnabledConverter x:Key="TaskStateToIsEnabledConverter"/>
         <converters:TaskStateToPackIconKindConverter x:Key="TaskStateToPackIconKindConverter"/>
         <converters:TaskStateToDescriptionConverter x:Key="TaskStateToDescriptionConverter"/>
