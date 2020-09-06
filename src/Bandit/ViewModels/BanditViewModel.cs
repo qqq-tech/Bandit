@@ -306,6 +306,8 @@ namespace Bandit.ViewModels
                 _postCaches.Clear();
                 _postCaches.AddRange(band.GetFeed());
 
+                band.CheckAttendance("https://band.us/band/81056748/post/7");
+
                 CurrentTaskState = TaskState.Running;
 
                 if (Settings.Instance.IsAutomatic)
@@ -342,7 +344,8 @@ namespace Bandit.ViewModels
 
                         foreach (DateTime time in Settings.Instance.ReservatedTimes)
                         {
-                            if (DateTime.Now.TimeOfDay.TotalMinutes == time.TimeOfDay.TotalMinutes)
+                            // 소수점 이하 자리를 버리기 위해 버림 함수 사용.
+                            if (Math.Truncate(DateTime.Now.TimeOfDay.TotalMinutes) == time.TimeOfDay.TotalMinutes)
                             {
                                 List<string> posts = band.GetFeed();
 
