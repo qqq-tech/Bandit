@@ -5,6 +5,9 @@ using System.Windows.Data;
 
 namespace Bandit.Converters
 {
+    /// <summary>
+    /// ListView 객체의 각 Item을(를) 순서를 지정하는 문자열로 변환해주는 Converter 입니다.
+    /// </summary>
     [ValueConversion(typeof(ListView), typeof(string))]
     public class IndexConverter : IValueConverter
     {

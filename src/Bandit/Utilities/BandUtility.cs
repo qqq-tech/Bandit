@@ -96,86 +96,91 @@ namespace Bandit.Utilities
 
         #region ::General::
 
-        public void Start()
+        public async Task StartAsync()
         {
-            if (!IsRunning)
+            var task = new Task(() =>
             {
-                try
+                if (!IsRunning)
                 {
-                    // 드라이버 서비스를 초기화한다.
-                    string driverPath = Path.Combine(Directory.GetCurrentDirectory(), "chromedriver.exe");
-                    Reports.Instance.AddReportWithDispatcher(ReportType.Information, $"크롬 드라이버 경로가 '{driverPath}'(으)로 지정되었습니다.");
-                    _driverService = ChromeDriverService.CreateDefaultService(Directory.GetCurrentDirectory(), driverPath);
-
-                    if (!Settings.Instance.UseConsole)
+                    try
                     {
-                        _driverService.HideCommandPromptWindow = true; // 콘솔 사용 여부를 지정한다.
-                    }
+                        // 드라이버 서비스를 초기화한다.
+                        string driverPath = Path.Combine(Directory.GetCurrentDirectory(), "chromedriver.exe");
+                        Reports.Instance.AddReportWithDispatcher(ReportType.Information, $"크롬 드라이버 경로가 '{driverPath}'(으)로 지정되었습니다.");
+                        _driverService = ChromeDriverService.CreateDefaultService(Directory.GetCurrentDirectory(), driverPath);
 
-                    // 크롬 설정을 초기화한다.
-                    ChromeOptions options = new ChromeOptions();
-                    options.AddArguments($"user-data-dir={Directory.GetCurrentDirectory()}/data/profile"); // 사용자 데이터(쿠키)가 저장될 디렉토리를 지정한다.
-                    options.AddArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36");
-
-                    options.AddUserProfilePreference($"profile", new
-                    {
-                        default_content_setting_values = new
+                        if (!Settings.Instance.UseConsole)
                         {
-                            //cookies = 2,
-                            images = 2,
-                            plugins = 2,
-                            popups = 2,
-                            geolocation = 2,
-                            notifications = 2,
-                            auto_select_certificate = 2,
-                            fullscreen = 2,
-                            mouselock = 2,
-                            mixed_script = 2,
-                            media_stream = 2,
-                            media_stream_mic = 2,
-                            media_stream_camera = 2,
-                            protocol_handlers = 2,
-                            ppapi_broker = 2,
-                            automatic_downloads = 2,
-                            midi_sysex = 2,
-                            push_messaging = 2,
-                            ssl_cert_decisions = 2,
-                            metro_switch_to_desktop = 2,
-                            protected_media_identifier = 2,
-                            app_banner = 2,
-                            site_engagement = 2,
-                            durable_storage = 2
+                            _driverService.HideCommandPromptWindow = true; // 콘솔 사용 여부를 지정한다.
                         }
-                    });
 
-                    if (Settings.Instance.UseHeadless)
-                    {
-                        options.AddArgument("headless");
-                        options.AddArgument("window-size=1920x1080");
-                        options.AddArgument("disable-gpu");
+                        // 크롬 설정을 초기화한다.
+                        ChromeOptions options = new ChromeOptions();
+                        options.AddArguments($"user-data-dir={Directory.GetCurrentDirectory()}/data/profile"); // 사용자 데이터(쿠키)가 저장될 디렉토리를 지정한다.
+                        options.AddArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36");
+
+                        options.AddUserProfilePreference($"profile", new
+                        {
+                            default_content_setting_values = new
+                            {
+                                //cookies = 2,
+                                images = 2,
+                                plugins = 2,
+                                popups = 2,
+                                geolocation = 2,
+                                notifications = 2,
+                                auto_select_certificate = 2,
+                                fullscreen = 2,
+                                mouselock = 2,
+                                mixed_script = 2,
+                                media_stream = 2,
+                                media_stream_mic = 2,
+                                media_stream_camera = 2,
+                                protocol_handlers = 2,
+                                ppapi_broker = 2,
+                                automatic_downloads = 2,
+                                midi_sysex = 2,
+                                push_messaging = 2,
+                                ssl_cert_decisions = 2,
+                                metro_switch_to_desktop = 2,
+                                protected_media_identifier = 2,
+                                app_banner = 2,
+                                site_engagement = 2,
+                                durable_storage = 2
+                            }
+                        });
+
+                        if (Settings.Instance.UseHeadless)
+                        {
+                            options.AddArgument("headless");
+                            options.AddArgument("window-size=1920x1080");
+                            options.AddArgument("disable-gpu");
+                        }
+
+                        // 크롬 드라이버를 초기화한다.
+                        _driver = new ChromeDriver(_driverService, options);
+                        _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(Settings.Instance.TimeOutLimit); // 암시적 타임아웃 대기 시간 지정.
+                        _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(Settings.Instance.TimeOutLimit); // 페이지 타임아웃 대기 시간 지정.
+
+                        _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(Settings.Instance.TimeOutLimit)); // 공용 웹 드라이버 대기 시간 지정.
+                        Reports.Instance.AddReportWithDispatcher(ReportType.Information, $"크롬 드라이버가 실행되었습니다.");
                     }
-
-                    // 크롬 드라이버를 초기화한다.
-                    _driver = new ChromeDriver(_driverService, options);
-                    _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(Settings.Instance.TimeOutLimit); // 암시적 타임아웃 대기 시간 지정.
-                    _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(Settings.Instance.TimeOutLimit); // 페이지 타임아웃 대기 시간 지정.
-
-                    _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(Settings.Instance.TimeOutLimit)); // 공용 웹 드라이버 대기 시간 지정.
-                    Reports.Instance.AddReportWithDispatcher(ReportType.Information, $"크롬 드라이버가 실행되었습니다.");
+                    catch (InvalidOperationException ex)
+                    {
+                        Reports.Instance.AddReportWithDispatcher(ReportType.Information, $"사용자의 컴퓨터에 설치된 크롬과 크롬 드라이버가 호환되지 않습니다. {ex.StackTrace}");
+                        MessageBox.Show($"사용자의 컴퓨터에 설치된 크롬과 크롬 드라이버가 호환되지 않습니다. {ex.Message}\r\n{ex.StackTrace}", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
+                        Dispose();
+                        return;
+                    }
                 }
-                catch (InvalidOperationException ex)
+                else
                 {
-                    Reports.Instance.AddReportWithDispatcher(ReportType.Information, $"사용자의 컴퓨터에 설치된 크롬과 크롬 드라이버가 호환되지 않습니다. {ex.StackTrace}");
-                    MessageBox.Show($"사용자의 컴퓨터에 설치된 크롬과 크롬 드라이버가 호환되지 않습니다. {ex.Message}\r\n{ex.StackTrace}", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
-                    Dispose();
-                    return;
+                    Reports.Instance.AddReportWithDispatcher(ReportType.Information, $"크롬 드라이버 실행이 거부되었습니다.");
+                    MessageBox.Show("크롬 드라이버가 이미 실행중입니다!", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-            }
-            else
-            {
-                Reports.Instance.AddReportWithDispatcher(ReportType.Information, $"크롬 드라이버 실행이 거부되었습니다.");
-                MessageBox.Show("크롬 드라이버가 이미 실행중입니다!", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            });
+            task.Start();
+            await task;
         }
 
         public void Stop()
@@ -204,207 +209,180 @@ namespace Bandit.Utilities
             }
         }
 
-        public void ManualTaskStart()
-        {
-            if (!IsRunning)
-            {
-                Reports.Instance.AddReport(ReportType.Caution, $"수동 작업이 거부되었습니다.");
-                MessageBox.Show("크롬 드라이버가 동작하고 있지 않습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            // 수동 작업 시퀀스를 시작한다.
-            _driver.Navigate().GoToUrl(Settings.URL_BAND);
-        }
-
-        public Func<IWebDriver, bool> UrlToBe(string url)
-        {
-            return (driver) => { return driver.Url.ToLowerInvariant().Equals(url.ToLowerInvariant()); };
-        }
-
         #endregion
 
         #region ::Login::
 
-        public LoginResult Login(string identity, string password)
+        public async Task<LoginResult> LoginAsync(string identity, string password)
         {
-            if (!IsRunning)
+            var task = new Task<LoginResult>(() =>
             {
-                Reports.Instance.AddReportWithDispatcher(ReportType.Caution, $"로그인 작업이 거부되었습니다.");
-                MessageBox.Show("크롬 드라이버가 동작하고 있지 않습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
-                return LoginResult.TechnicalFailure;
-            }
-
-            // 로그인 시퀀스를 시작한다.
-            _driver.Navigate().GoToUrl(Settings.URL_EMAIL_LOGIN_ID);
-
-            // 아이디 입력을 위한 대리자를 선언 및 초기화한다.
-            Func<IWebDriver, bool> identityTask = new Func<IWebDriver, bool>((web) =>
-            {
-                try
+                if (!IsRunning)
                 {
-                    IWebElement element = web.FindElement(By.Id("input_email"));
-                    element.SendKeys(identity);
-
-                    element = web.FindElement(By.XPath("//*[@id='email_login_form']/button"));
-                    element.Click();
-
-                    return true;
+                    Reports.Instance.AddReportWithDispatcher(ReportType.Caution, $"로그인 작업이 거부되었습니다.");
+                    MessageBox.Show("크롬 드라이버가 동작하고 있지 않습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return LoginResult.TechnicalFailure;
                 }
-                catch (NoSuchElementException ex)
+
+                // 로그인 시퀀스를 시작한다.
+                _driver.Navigate().GoToUrl(Settings.URL_EMAIL_LOGIN_ID);
+
+                // 아이디 입력을 위한 대리자를 선언 및 초기화한다.
+                Func<IWebDriver, bool> identityTask = new Func<IWebDriver, bool>((web) =>
                 {
-                    Reports.Instance.AddReportWithDispatcher(ReportType.Warning, $"ID 입력 필드를 찾을 수 없습니다. {ex.StackTrace}");
-                    return false;
+                    try
+                    {
+                        IWebElement element = web.FindElement(By.Id("input_email"));
+                        element.SendKeys(identity);
+
+                        element = web.FindElement(By.XPath("//*[@id='email_login_form']/button"));
+                        element.Click();
+
+                        return true;
+                    }
+                    catch (NoSuchElementException ex)
+                    {
+                        Reports.Instance.AddReportWithDispatcher(ReportType.Warning, $"ID 입력 필드를 찾을 수 없습니다. {ex.StackTrace}");
+                        return false;
+                    }
+                });
+
+                // 아이디 입력 완료 대기.
+                if (!_wait.Until(identityTask))
+                {
+                    return LoginResult.IdentityFailure;
                 }
-            });
 
-            // ID 입력 완료 대기.
-            if (!_wait.Until(identityTask))
-            {
-                return LoginResult.IdentityFailure;
-            }
-
-            // 페이지 전환 여부를 통해 ID 일치 여부를 확인한다.
-            if (_driver.Url.Contains(Settings.URL_EMAIL_LOGIN_ID))
-            {
-                Reports.Instance.AddReportWithDispatcher(ReportType.Caution, $"ID가 일치하지 않습니다.");
-                return LoginResult.IdentityFailure;
-            }
-
-            // 아이디 입력을 위한 대리자를 선언 및 초기화한다.
-            Func<IWebDriver, bool> passwordTask = new Func<IWebDriver, bool>((web) =>
-            {
-                try
+                // 페이지 전환 여부를 통해 ID 일치 여부를 확인한다.
+                if (_driver.Url.Contains(Settings.URL_EMAIL_LOGIN_ID))
                 {
-                    IWebElement element = web.FindElement(By.Id("pw"));
-                    element.SendKeys(password);
-
-                    element = web.FindElement(By.XPath("//*[@id='email_password_login_form']/button"));
-                    element.Click();
-
-                    return true;
+                    Reports.Instance.AddReportWithDispatcher(ReportType.Caution, $"ID가 일치하지 않습니다.");
+                    return LoginResult.IdentityFailure;
                 }
-                catch (NoSuchElementException ex)
+
+                // 비밀번호 입력을 위한 대리자를 선언 및 초기화한다.
+                Func<IWebDriver, bool> passwordTask = new Func<IWebDriver, bool>((web) =>
                 {
-                    Reports.Instance.AddReportWithDispatcher(ReportType.Warning, $"ID 입력 필드를 찾을 수 없습니다. {ex.StackTrace}");
-                    return false;
+                    try
+                    {
+                        IWebElement element = web.FindElement(By.Id("pw"));
+                        element.SendKeys(password);
+
+                        element = web.FindElement(By.XPath("//*[@id='email_password_login_form']/button"));
+                        element.Click();
+
+                        return true;
+                    }
+                    catch (NoSuchElementException ex)
+                    {
+                        Reports.Instance.AddReportWithDispatcher(ReportType.Warning, $"ID 입력 필드를 찾을 수 없습니다. {ex.StackTrace}");
+                        return false;
+                    }
+                });
+
+                // 비밀번호 입력 완료 대기.
+                if (!_wait.Until(passwordTask))
+                {
+                    return LoginResult.PasswordFailure;
                 }
-            });
 
-            // PW 입력 완료 대기.
-            if (!_wait.Until(passwordTask))
-            {
-                return LoginResult.PasswordFailure;
-            }
-
-            // 페이지 전환 여부를 통해 PW 일치 여부를 확인한다.
-            if (_driver.Url.Contains(Settings.URL_EMAIL_LOGIN_PW))
-            {
-                Reports.Instance.AddReportWithDispatcher(ReportType.Caution, $"비밀번호가 일치하지 않습니다.");
-                return LoginResult.PasswordFailure;
-            }
-
-            // 로그인이 완료되었는지, PIN 인증이 필요한 지의 여부를 확인한다.
-            if (_driver.Url.Contains(Settings.URL_EMAIL_LOGIN_PIN))
-            {
-                return LoginResult.RequirePin;
-            }
-            else
-            {
-                BandAccount.Instance.Profile.Name = identity;
-                BandAccount.Instance.IsInitialized = true;
-
-                LoadProfileImage();
-
-                return LoginResult.Succeed;
-            }
-        }
-
-        public bool CertifyPin(string identity, string pin)
-        {
-            if (!IsRunning)
-            {
-                Reports.Instance.AddReportWithDispatcher(ReportType.Caution, $"로그인 작업이 거부되었습니다.");
-                MessageBox.Show("크롬 드라이버가 동작하고 있지 않습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
-            }
-
-            bool result = false;
-
-            // PIN 입력을 위한 대리자를 선언 및 초기화한다.
-            Func<IWebDriver, bool> pinTask = new Func<IWebDriver, bool>((web) =>
-            {
-                try
+                // 페이지 전환 여부를 통해 PW 일치 여부를 확인한다.
+                if (_driver.Url.Contains(Settings.URL_EMAIL_LOGIN_PW))
                 {
-                    IWebElement element = web.FindElement(By.Id("code"));
-                    element.Clear();
-                    element.SendKeys(pin);
-
-                    element = web.FindElement(By.Id("trust"));
-                    element.Click();
-
-                    element = web.FindElement(By.XPath("//*[@id='inputForm']/button[1]"));
-                    element.Click();
-
-                    return true;
+                    Reports.Instance.AddReportWithDispatcher(ReportType.Caution, $"비밀번호가 일치하지 않습니다.");
+                    return LoginResult.PasswordFailure;
                 }
-                catch (NoSuchElementException ex)
-                {
-                    Reports.Instance.AddReportWithDispatcher(ReportType.Warning, $"PIN 입력 필드를 찾을 수 없습니다. {ex.StackTrace}");
-                    return false;
-                }
-            });
 
-            if (!_wait.Until(pinTask))
-            {
-                return false;
-            }
-
-            Func<IWebDriver, bool> pinValidTask = new Func<IWebDriver, bool>((IWebDriver Web) =>
-            {
-                try
+                // 로그인이 완료되었는지, PIN 인증이 필요한 지의 여부를 확인한다.
+                if (_driver.Url.Contains(Settings.URL_EMAIL_LOGIN_PIN))
                 {
-                    IWebElement element = Web.FindElement(By.Id("errorMessage"));
-                    return false;
-                }
-                catch (NoSuchElementException)
-                {
-                    return true;
-                }
-            });
-
-            // PIN 인증 여부 확인.
-            try
-            {
-                if (_wait.Until(pinValidTask))
-                {
-                    result = true;
+                    return LoginResult.RequirePin;
                 }
                 else
                 {
-                    result = false;
+                    Account.Instance.Profile.Name = identity;
+                    Account.Instance.IsInitialized = true;
+
+                    LoadProfileImage();
+
+                    return LoginResult.Succeed;
                 }
-            }
-            catch (WebDriverTimeoutException)
-            {
-                result = false;
-            }
+            });
+            task.Start();
+            await task;
 
-            // 결괏값 반환.
-            if (!result)
-            {
-                BandAccount.Instance = new BandAccount(); // 계정 정보 초기화.
-                return false;
-            }
-            else
-            {
-                BandAccount.Instance.Profile.Name = identity;
-                BandAccount.Instance.IsInitialized = true;
+            return task.Result;
+        }
 
-                LoadProfileImage();
+        public async Task<bool> CertifyAsync(string identity, string pin)
+        {
+            var task = new Task<bool>(() =>
+            {
+                if (!IsRunning)
+                {
+                    Reports.Instance.AddReportWithDispatcher(ReportType.Caution, $"로그인 작업이 거부되었습니다.");
+                    MessageBox.Show("크롬 드라이버가 동작하고 있지 않습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return false;
+                }
 
-                return true;
-            }
+                bool result = false;
+
+                // PIN 입력을 위한 대리자를 선언 및 초기화한다.
+                Func<IWebDriver, bool> pinTask = new Func<IWebDriver, bool>((web) =>
+                {
+                    try
+                    {
+                        IWebElement element = web.FindElement(By.Id("code"));
+                        element.Clear();
+                        element.SendKeys(pin);
+
+                        element = web.FindElement(By.Id("trust"));
+                        element.Click();
+
+                        element = web.FindElement(By.XPath("//*[@id='inputForm']/button[1]"));
+                        element.Click();
+
+                        return true;
+                    }
+                    catch (NoSuchElementException ex)
+                    {
+                        Reports.Instance.AddReportWithDispatcher(ReportType.Warning, $"PIN 입력 필드를 찾을 수 없습니다. {ex.StackTrace}");
+                        return false;
+                    }
+                });
+
+                if (!_wait.Until(pinTask))
+                {
+                    return false;
+                }
+
+                // 페이지 전환 여부를 통해 PIN 일치 여부를 확인한다.
+                if (_driver.Url.Contains(Settings.URL_EMAIL_LOGIN_PIN))
+                {
+                    Reports.Instance.AddReportWithDispatcher(ReportType.Caution, $"PIN이 일치하지 않습니다.");
+                    return false;
+                }
+
+                // 결괏값 반환.
+                if (!result)
+                {
+                    Account.Instance = new Account(); // 계정 정보 초기화.
+                    return false;
+                }
+                else
+                {
+                    Account.Instance.Profile.Name = identity;
+                    Account.Instance.IsInitialized = true;
+
+                    LoadProfileImage();
+
+                    return true;
+                }
+            });
+            task.Start();
+            await task;
+
+            return task.Result;
         }
 
         #endregion
@@ -413,7 +391,7 @@ namespace Bandit.Utilities
 
         public void LoadProfileImage()
         {
-            if (BandAccount.Instance.IsInitialized)
+            if (Account.Instance.IsInitialized)
             {
                 if (!IsRunning)
                 {
@@ -438,7 +416,7 @@ namespace Bandit.Utilities
                         if (profileImage.SelectSingleNode("//img") != null)
                         {
                             profileImage = profileImage.SelectSingleNode("//img");
-                            BandAccount.Instance.Profile.ImageUrl = new Uri(profileImage.Attributes["src"].Value);
+                            Account.Instance.Profile.ImageUrl = new Uri(profileImage.Attributes["src"].Value);
                             return true;
                         }
                         else
@@ -465,157 +443,169 @@ namespace Bandit.Utilities
 
         #region ::Feed::
 
-        public List<string> GetFeed()
+        public async Task<List<string>> GetFeedAsync()
         {
-            if (BandAccount.Instance.IsInitialized)
+            var task = new Task<List<string>>(() =>
             {
-                if (!IsRunning)
+                if (Account.Instance.IsInitialized)
                 {
-                    Reports.Instance.AddReportWithDispatcher(ReportType.Caution, $"새 글 피드 가져오기 작업이 거부되었습니다.");
-                    MessageBox.Show("크롬 드라이버가 동작하고 있지 않습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return null;
-                }
-
-                if (_driver.Url == Settings.URL_FEEDS_PAGE)
-                {
-                    _driver.Navigate().Refresh();
-                }
-                else
-                {
-                    _driver.Navigate().GoToUrl(Settings.URL_FEEDS_PAGE);
-                }
-
-                Func<IWebDriver, HtmlDocument> postTask = new Func<IWebDriver, HtmlDocument>((web) =>
-                {
-                    try
+                    if (!IsRunning)
                     {
-                        new WebDriverWait(_driver, TimeSpan.FromSeconds(Settings.Instance.TimeOutLimit)).Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("//div[@class='_feedListRegion']")));
-
-                        HtmlDocument document = new HtmlDocument();
-                        document.LoadHtml(web.PageSource);
-                        return document;
-                    }
-                    catch (NoSuchElementException ex)
-                    {
-                        Reports.Instance.AddReportWithDispatcher(ReportType.Caution, $"새 글 피드를 가져올 수 없습니다. {ex.StackTrace}");
-                        MessageBox.Show("새 글 피드 소스를 가져올 수 없습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
+                        Reports.Instance.AddReportWithDispatcher(ReportType.Caution, $"새 글 피드 가져오기 작업이 거부되었습니다.");
+                        MessageBox.Show("크롬 드라이버가 동작하고 있지 않습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
                         return null;
                     }
-                });
 
-                // 로딩 대기.
-                HtmlDocument document = _wait.Until(postTask);
-
-                if (document != null)
-                {
-                    // 피드 파싱.
-                    HtmlNode postsRoot = document.DocumentNode.SelectSingleNode("//div[@class='_feedListRegion']").SelectSingleNode("//div[@data-viewname='DFeedListView']");
-                    HtmlNodeCollection posts = postsRoot.SelectNodes("//section[@data-viewname='DFeedItemView']");
-
-                    List<string> postList = new List<string>();
-
-                    // 주소 파싱.
-                    foreach (HtmlNode post in posts)
+                    if (_driver.Url == Settings.URL_FEEDS_PAGE)
                     {
-                        postList.Add(post.SelectSingleNode("//a[@class='time']").Attributes["href"].Value);
+                        _driver.Navigate().Refresh();
+                    }
+                    else
+                    {
+                        _driver.Navigate().GoToUrl(Settings.URL_FEEDS_PAGE);
                     }
 
-                    Reports.Instance.AddReportWithDispatcher(ReportType.Complete, $"새 글 피드를 갱신했습니다.");
-                    return postList;
+                    Func<IWebDriver, HtmlDocument> postTask = new Func<IWebDriver, HtmlDocument>((web) =>
+                    {
+                        try
+                        {
+                            new WebDriverWait(_driver, TimeSpan.FromSeconds(Settings.Instance.TimeOutLimit)).Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("//div[@class='_feedListRegion']")));
+
+                            HtmlDocument document = new HtmlDocument();
+                            document.LoadHtml(web.PageSource);
+                            return document;
+                        }
+                        catch (NoSuchElementException ex)
+                        {
+                            Reports.Instance.AddReportWithDispatcher(ReportType.Caution, $"새 글 피드를 가져올 수 없습니다. {ex.StackTrace}");
+                            MessageBox.Show("새 글 피드 소스를 가져올 수 없습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return null;
+                        }
+                    });
+
+                    // 로딩 대기.
+                    HtmlDocument document = _wait.Until(postTask);
+
+                    if (document != null)
+                    {
+                        // 피드 파싱.
+                        HtmlNode postsRoot = document.DocumentNode.SelectSingleNode("//div[@class='_feedListRegion']").SelectSingleNode("//div[@data-viewname='DFeedListView']");
+                        HtmlNodeCollection posts = postsRoot.SelectNodes("//section[@data-viewname='DFeedItemView']");
+
+                        List<string> postList = new List<string>();
+
+                        // 주소 파싱.
+                        foreach (HtmlNode post in posts)
+                        {
+                            postList.Add(post.SelectSingleNode("//a[@class='time']").Attributes["href"].Value);
+                        }
+
+                        Reports.Instance.AddReportWithDispatcher(ReportType.Complete, $"새 글 피드를 갱신했습니다.");
+                        return postList;
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
                 else
                 {
                     return null;
                 }
-            }
-            else
-            {
-                return null;
-            }
+            });
+            task.Start();
+            await task;
+
+            return task.Result;
         }
 
         #endregion
 
         #region ::Attendance::
 
-        public void CheckAttendance(string url)
+        public async Task CheckAttendanceAsync(string url)
         {
-            if (BandAccount.Instance.IsInitialized)
+            var task = new Task(() =>
             {
-                if (!IsRunning)
+                if (Account.Instance.IsInitialized)
                 {
-                    Reports.Instance.AddReportWithDispatcher(ReportType.Caution, $"출석 작업이 거부되었습니다.");
-                    MessageBox.Show("크롬 드라이버가 동작하고 있지 않습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-
-                _driver.Navigate().GoToUrl(url);
-
-                Func<IWebDriver, HtmlDocument> postTask = new Func<IWebDriver, HtmlDocument>((web) =>
-                {
-                    try
+                    if (!IsRunning)
                     {
-                        new WebDriverWait(_driver, TimeSpan.FromSeconds(Settings.Instance.TimeOutLimit)).Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("//div[@class='postMain']")));
-
-                        HtmlDocument document = new HtmlDocument();
-                        document.LoadHtml(web.PageSource);
-                        return document;
+                        Reports.Instance.AddReportWithDispatcher(ReportType.Caution, $"출석 작업이 거부되었습니다.");
+                        MessageBox.Show("크롬 드라이버가 동작하고 있지 않습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
                     }
-                    catch (NoSuchElementException ex)
+
+                    _driver.Navigate().GoToUrl(url);
+
+                    Func<IWebDriver, HtmlDocument> postTask = new Func<IWebDriver, HtmlDocument>((web) =>
                     {
-                        Reports.Instance.AddReportWithDispatcher(ReportType.Caution, $"게시글 소스를 가져올 수 없습니다. {ex.StackTrace}");
-                        MessageBox.Show("게시글 소스를 가져올 수 없습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return null;
-                    }
-                });
-
-                // 로딩 대기.
-                HtmlDocument document = _wait.Until(postTask);
-
-                if (document == null)
-                {
-                    return;
-                }
-
-                // 출석 목록 파싱.
-                HtmlNode[] attendanceNodes = document.DocumentNode.SelectSingleNode("//div[@class='postMain']").SelectNodes("//div[@data-viewname='DPostAttendanceCheckView']").ToArray();
-                List<string> attendeeIdList = new List<string>();
-
-                for (int index = 0; index < attendanceNodes.Length; index++)
-                {
-                    string id = attendanceNodes[index].SelectSingleNode("//label[@class='etc']").Attributes["for"].Value;
-                    attendeeIdList.Add(id);
-                }
-
-                // 출석 체크를 위한 대리자를 선언 및 초기화한다.
-                Func<IWebDriver, bool> attendanceTask = new Func<IWebDriver, bool>((web) =>
-                {
-                    try
-                    {
-                        foreach (string attendeeId in attendeeIdList)
+                        try
                         {
-                            IWebElement element = web.FindElement(By.Id(attendeeId));
-                            element.Click();
+                            new WebDriverWait(_driver, TimeSpan.FromSeconds(Settings.Instance.TimeOutLimit)).Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("//div[@class='postMain']")));
+
+                            HtmlDocument document = new HtmlDocument();
+                            document.LoadHtml(web.PageSource);
+                            return document;
                         }
+                        catch (NoSuchElementException ex)
+                        {
+                            Reports.Instance.AddReportWithDispatcher(ReportType.Caution, $"게시글 소스를 가져올 수 없습니다. {ex.StackTrace}");
+                            MessageBox.Show("게시글 소스를 가져올 수 없습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return null;
+                        }
+                    });
 
-                        return true;
-                    }
-                    catch (NoSuchElementException ex)
+                    // 로딩 대기.
+                    HtmlDocument document = _wait.Until(postTask);
+
+                    if (document == null)
                     {
-                        Reports.Instance.AddReportWithDispatcher(ReportType.Warning, $"ID 입력 필드를 찾을 수 없습니다. {ex.StackTrace}");
-                        return false;
+                        return;
                     }
-                });
 
-                // 출석 체크 완료 대기.
-                if (!_wait.Until(attendanceTask))
-                {
-                    return;
+                    // 출석 목록 파싱.
+                    HtmlNode[] attendanceNodes = document.DocumentNode.SelectSingleNode("//div[@class='postMain']").SelectNodes("//div[@data-viewname='DPostAttendanceCheckView']").ToArray();
+                    List<string> attendeeIdList = new List<string>();
+
+                    for (int index = 0; index < attendanceNodes.Length; index++)
+                    {
+                        string id = attendanceNodes[index].SelectSingleNode("//label[@class='etc']").Attributes["for"].Value;
+                        attendeeIdList.Add(id);
+                    }
+
+                    // 출석 체크를 위한 대리자를 선언 및 초기화한다.
+                    Func<IWebDriver, bool> attendanceTask = new Func<IWebDriver, bool>((web) =>
+                    {
+                        try
+                        {
+                            foreach (string attendeeId in attendeeIdList)
+                            {
+                                IWebElement element = web.FindElement(By.Id(attendeeId));
+                                element.Click();
+                            }
+
+                            return true;
+                        }
+                        catch (NoSuchElementException ex)
+                        {
+                            Reports.Instance.AddReportWithDispatcher(ReportType.Warning, $"ID 입력 필드를 찾을 수 없습니다. {ex.StackTrace}");
+                            return false;
+                        }
+                    });
+
+                    // 출석 체크 완료 대기.
+                    if (!_wait.Until(attendanceTask))
+                    {
+                        return;
+                    }
+
+                    string postTitle = document.DocumentNode.SelectSingleNode("//div[@class='item -attendance']").SelectSingleNode("//p[@class='addTitle']").InnerText;
+                    Reports.Instance.AddReportWithDispatcher(ReportType.Complete, $"'{postTitle}' 출석 처리를 완료했습니다.");
                 }
-
-                string postTitle = document.DocumentNode.SelectSingleNode("//div[@class='item -attendance']").SelectSingleNode("//p[@class='addTitle']").InnerText;
-                Reports.Instance.AddReportWithDispatcher(ReportType.Complete, $"'{postTitle}' 출석 처리를 완료했습니다.");
-            }
+            });
+            task.Start();
+            await task;
         }
 
         #endregion

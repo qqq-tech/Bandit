@@ -12,7 +12,7 @@ namespace Bandit
         {
             base.OnStartup(e);
 
-            Settings.Instance.Deserialize(Settings.PATH_SETTINGS);
+            Settings.Instance = Settings.Deserialize(Settings.PATH_SETTINGS);
         }
 
         protected override void OnExit(ExitEventArgs e)

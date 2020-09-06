@@ -5,6 +5,9 @@ using System.Windows.Data;
 
 namespace Bandit.Converters
 {
+    /// <summary>
+    /// 작업 상태에 따른 활성화 여부를 반환하는 Converter 입니다.
+    /// </summary>
     [ValueConversion(typeof(TaskState), typeof(bool))]
     public class TaskStateToIsEnabledConverter : IValueConverter
     {

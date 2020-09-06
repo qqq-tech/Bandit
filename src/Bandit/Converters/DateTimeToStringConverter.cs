@@ -4,6 +4,9 @@ using System.Windows.Data;
 
 namespace Bandit.Converters
 {
+    /// <summary>
+    /// DateTime 객체를 지정된 형식의 문자열로 만들어주는 Converter 입니다.
+    /// </summary>
     [ValueConversion(typeof(DateTime), typeof(string))]
     public class DateTimeToStringConverter : IValueConverter
     {

@@ -7,6 +7,9 @@ using System.Windows.Media;
 
 namespace Bandit.Converters
 {
+    /// <summary>
+    /// 작업 상태에 따른 색상을 반환하는 Converter 입니다.
+    /// </summary>
     [ValueConversion(typeof(TaskState), typeof(Brush))]
     public class TaskStateToSolidBrushConverter : IValueConverter
     {

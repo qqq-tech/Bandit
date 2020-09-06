@@ -5,24 +5,22 @@ namespace Bandit.Models
     /// <summary>
     /// 밴드 계정의 정보를 기록하는 클래스 입니다.
     /// </summary>
-    internal class BandAccount
+    internal class Account
     {
         #region ::Singleton Supports::
 
-        private static BandAccount _instance;
+        private static Account _instance;
 
         /// <summary>
         /// 밴드 계정 클래스의 싱글톤 인스턴스를 불러오거나 변경합니다.
         /// </summary>
-        internal static BandAccount Instance
+        internal static Account Instance
         {
             get
             {
                 if (_instance == null)
                 {
-                    _instance = new BandAccount();
-                    _instance.IsInitialized = false;
-                    _instance.Profile = new UserProfile();
+                    _instance = new Account();
                 }
 
                 return _instance;
@@ -35,6 +33,8 @@ namespace Bandit.Models
 
         #endregion
 
+        #region ::Properties::
+
         /// <summary>
         /// 계정 정보가 초기화 되었는지의 여부를 지정합니다.
         /// </summary>
@@ -45,13 +45,19 @@ namespace Bandit.Models
         /// </summary>
         internal UserProfile Profile { get; set; }
 
+        #endregion
+
+        #region ::Constructors::
+
         /// <summary>
         /// 새로운 밴드 계정 클래스의 인스턴스를 생성합니다.
         /// </summary>
-        internal BandAccount()
+        internal Account()
         {
             IsInitialized = false;
             Profile = new UserProfile();
         }
+
+        #endregion
     }
 }

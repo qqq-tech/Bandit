@@ -151,18 +151,19 @@
     <Compile Include="Converters\TaskStateToSolidBrushConverter.cs" />
     <Compile Include="Converters\TaskStateToStatusConverter.cs" />
     <Compile Include="Converters\UriToImageSourceConverter.cs" />
+    <Compile Include="Entities\DriverInstallerState.cs" />
     <Compile Include="Entities\LoginResult.cs" />
     <Compile Include="Entities\Report.cs" />
     <Compile Include="Entities\ReportType.cs" />
     <Compile Include="Entities\TaskState.cs" />
     <Compile Include="Entities\UserProfile.cs" />
-    <Compile Include="Models\BandAccount.cs" />
+    <Compile Include="Models\Account.cs" />
     <Compile Include="Models\Reports.cs" />
     <Compile Include="Models\Settings.cs" />
     <Compile Include="Utilities\BandUtility.cs" />
     <Compile Include="Utilities\DriverUtility.cs" />
     <Compile Include="Utilities\FileUtility.cs" />
-    <Compile Include="Utilities\Parser.cs" />
+    <Compile Include="Utilities\ParsingUtility.cs" />
     <Compile Include="ViewModels\BanditViewModel.cs" />
     <Compile Include="ViewModels\DriverInstallerViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
@@ -188,9 +189,6 @@
     </Compile>
     <Compile Include="Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\TestView.xaml.cs">
-      <DependentUpon>TestView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -246,10 +244,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SettingsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\TestView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
