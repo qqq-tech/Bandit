@@ -76,11 +76,11 @@
                     <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Margin="0 6 0 0" Text="※헤드리스 모드를 사용하지 않을 경우 작업이 불안정해질 수 있습니다." Opacity=".68"/>
                 </StackPanel>
 
-                <!--Reservated Times Settings-->
+                <!--Reserved Times Settings-->
                 <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Margin="0 40 0 0" Text="새 글 갱신 예약 시간"/>
                 <Border BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="1" Margin="0 6 0 0">
                     <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" >
-                        <ListView ItemsSource="{Binding ReservatedTimes, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="300" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                        <ListView ItemsSource="{Binding ReservedTimes, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="300" ScrollViewer.VerticalScrollBarVisibility="Visible"
                                   IsEnabled="{Binding IsAutomatic, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
                                   SelectedIndex="{Binding SelectedIndex, Mode=OneWayToSource}">
                             <ListView.View>
