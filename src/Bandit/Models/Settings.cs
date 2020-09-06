@@ -1,6 +1,5 @@
 ﻿using Bandit.Utilities;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,13 +26,6 @@ namespace Bandit.Models
                 if (_instance == null)
                 {
                     _instance = new Settings();
-                    _instance.DriverVersion = new DriverUtility().GetLatestVersion();
-                    _instance.IsAutomatic = true;
-                    _instance.RefreshInterval = 5;
-                    _instance.UseHeadless = true;
-                    _instance.UseConsole = false;
-                    _instance.ReservatedTimes = new List<DateTime>();
-                    _instance.TimeOutLimit = 10;
                 }
 
                 return _instance;
@@ -135,12 +127,34 @@ namespace Bandit.Models
         /// <summary>
         /// 예약된 시간 목록을 저장하는 목록입니다.
         /// </summary>
-        public List<DateTime> ReservatedTimes { get; set; }
+        public List<DateTime> ReservedTimes { get; set; }
 
         #endregion
 
-        #region ::Formatter::
+        #region ::Constructors::
 
+        /// <summary>
+        /// 새로운 설정 클래스의 인스턴스를 생성합니다.
+        /// </summary>
+        public Settings()
+        {
+            DriverVersion = new DriverUtility().GetLatestVersion();
+            IsAutomatic = true;
+            RefreshInterval = 5;
+            UseHeadless = true;
+            UseConsole = false;
+            ReservedTimes = new List<DateTime>();
+            TimeOutLimit = 10;
+        }
+
+        #endregion
+
+        #region ::Json Formatter::
+
+        /// <summary>
+        /// 현재 인스턴스를 Json 형식으로 Serialize(직렬화)합니다.
+        /// </summary>
+        /// <param name="filePath">직렬화 된 파일이 저장될 경로입니다.</param>
         public void Serialize(string filePath)
         {
             if (!Directory.Exists(Path.GetDirectoryName(filePath)))
@@ -153,19 +167,29 @@ namespace Bandit.Models
                 File.Delete(filePath);
             }
 
-            string jsonString = JsonConvert.SerializeObject(Instance);
+            string jsonString = JsonConvert.SerializeObject(this);
             FileUtility.WriteTextFile(filePath, jsonString, Encoding.UTF8);
         }
 
-        public void Deserialize(string filePath)
+        /// <summary>
+        /// 지정된 Json 파일을 Settings 클래스로 Deserialize(역직렬화)합니다.
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static Settings Deserialize(string filePath)
         {
             if (!File.Exists(filePath))
             {
-                return;
+                return new Settings();
             }
 
             string jsonString = FileUtility.ReadTextFile(filePath, Encoding.UTF8);
-            Instance = JsonConvert.DeserializeObject<Settings>(jsonString);
+            Settings settings = JsonConvert.DeserializeObject<Settings>(jsonString);
+
+            if (Instance.ReservedTimes == null)
+                Instance.ReservedTimes = new List<DateTime>();
+
+            return settings;
         }
 
         #endregion

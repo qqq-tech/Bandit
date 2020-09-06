@@ -1,24 +1,22 @@
 ﻿using Bandit.Commands;
 using Bandit.Dialogs;
 using Bandit.Entities;
-using Bandit.Models;
 using Bandit.Utilities;
-using Bandit.Views;
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
 namespace Bandit.ViewModels
 {
+    /// <summary>
+    /// 로그인 작업과 관련된 상호작용을 처리합니다.
+    /// </summary>
     internal class LoginViewModel : ViewModelBase
     {
         #region ::Fields::
-
-        private BandAccount _account;
 
         private BandUtility _bandUtility;
 
@@ -28,7 +26,6 @@ namespace Bandit.ViewModels
 
         internal LoginViewModel()
         {
-            _account = BandAccount.Instance;
             _bandUtility = BandUtility.Instance;
         }
 
@@ -38,6 +35,9 @@ namespace Bandit.ViewModels
 
         private string _identity = string.Empty;
 
+        /// <summary>
+        /// 사용자의 ID입니다.
+        /// </summary>
         public string Identity
         {
             get
@@ -53,6 +53,9 @@ namespace Bandit.ViewModels
 
         private SecureString _password = new SecureString();
 
+        /// <summary>
+        /// 사용자의 비밀번호입니다.
+        /// </summary>
         public SecureString Password
         {
             get
@@ -68,6 +71,9 @@ namespace Bandit.ViewModels
 
         private string _pin = string.Empty;
 
+        /// <summary>
+        /// 사용자의 인증 PIN입니다.
+        /// </summary>
         public string Pin
         {
             get
@@ -83,6 +89,9 @@ namespace Bandit.ViewModels
 
         private bool _isOpenDialog = false;
 
+        /// <summary>
+        /// 대화상자가 열려있는지에 대한 여부를 지정합니다.
+        /// </summary>
         public bool IsOpenDialog
         {
             get
@@ -98,6 +107,9 @@ namespace Bandit.ViewModels
 
         private object _dialog;
 
+        /// <summary>
+        /// 사용자가 상호작용할 대화상자입니다.
+        /// </summary>
         public object Dialog
         {
             get
@@ -113,75 +125,69 @@ namespace Bandit.ViewModels
 
         #endregion
 
-        #region ::Commands::
+        #region ::Validators::
 
-        private ICommand _logInCommand;
-
-        public ICommand LogInCommand
-        {
-            get
-            {
-                return (_logInCommand) ?? (_logInCommand = new DelegateCommand(LogIn));
-            }
-        }
-
-        private ICommand _pinCertificateCommand;
-
-        public ICommand PinCertificateCommand
-        {
-            get
-            {
-                return (_pinCertificateCommand) ?? (_pinCertificateCommand = new DelegateCommand(PinCertificate));
-            }
-        }
-
-        #endregion
-
-        #region ::Methods::
-
-        public bool IsValidEmailAddress(string input)
+        private bool IsValidEmailAddress(string input)
         {
             Regex regex = new Regex(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,10}$");
             return regex.IsMatch(input);
         }
 
-        public bool IsValidPassword(string input)
+        private bool IsValidPassword(string input)
         {
             Regex regex = new Regex(@"^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])?[A-Za-z\d!@#$%^&*()_+]{8,20}$");
             return regex.IsMatch(input);
         }
 
+        #endregion
 
+        #region ::Login Methods::
 
-        private void LogIn()
+        private bool Validate(string identity, SecureString password)
+        {
+            // 이메일 유효성 검사.
+            if (!IsValidEmailAddress(Identity))
+            {
+                MessageBox.Show("유효하지 않은 이메일 주소입니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return false;
+            }
+
+            // 비밀번호 유효성 검사.
+            IntPtr privateString = Marshal.SecureStringToCoTaskMemUnicode(Password);
+            bool isValidPassword = IsValidPassword(Marshal.PtrToStringUni(privateString));
+            Marshal.ZeroFreeCoTaskMemUnicode(privateString); // SecureString 메모리 할당 해제.
+
+            if (!isValidPassword)
+            {
+                MessageBox.Show("비밀번호는 8자 이상, 20자 이하의 영문과 숫자, 특수기호의 나열로 구성되어야 합니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 로그인 작업을 수행합니다.
+        /// </summary>
+        private async void LogIn()
         {
             Dialog = new ProgressDialog();
             IsOpenDialog = true;
 
-            if (!IsValidEmailAddress(Identity))
+            if (!Validate(Identity, Password))
             {
-                MessageBox.Show("유효하지 않은 이메일 주소입니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                IsOpenDialog = false;
-                return;
-            }
-
-            IntPtr pStr = Marshal.SecureStringToCoTaskMemUnicode(Password);
-            string password = Marshal.PtrToStringUni(pStr);
-
-            if (!IsValidPassword(password))
-            {
-                MessageBox.Show("비밀번호는 8자 이상, 20자 이하의 영문과 숫자, 특수기호의 나열로 구성되어야 합니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 IsOpenDialog = false;
                 return;
             }
 
             if (!_bandUtility.IsRunning)
-                _bandUtility.Start();
+                await _bandUtility.StartAsync();
 
-            var result = _bandUtility.Login(Identity, password);
+            IntPtr privateString = Marshal.SecureStringToCoTaskMemUnicode(Password);
+            var result = await _bandUtility.LoginAsync(Identity, Marshal.PtrToStringUni(privateString));
 
             // SecureString 메모리 할당 해제.
-            Marshal.ZeroFreeCoTaskMemUnicode(pStr);
+            Marshal.ZeroFreeCoTaskMemUnicode(privateString);
 
             if (result == LoginResult.IdentityFailure)
             {
@@ -214,9 +220,12 @@ namespace Bandit.ViewModels
             }
         }
 
-        private void PinCertificate()
+        /// <summary>
+        /// PIN 인증 작업을 수행합니다.
+        /// </summary>
+        private async void Certificate()
         {
-            bool result = _bandUtility.CertifyPin(Identity, Pin);
+            bool result = await _bandUtility.CertifyAsync(Identity, Pin);
 
             if (!result)
             {
@@ -228,6 +237,30 @@ namespace Bandit.ViewModels
                 Dialog = new CompleteDialog();
                 MessageBox.Show("로그인이 완료되었습니다!", "Bandit", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
+            }
+        }
+
+        #endregion
+
+        #region ::Commands::
+
+        private ICommand _logInCommand;
+
+        public ICommand LogInCommand
+        {
+            get
+            {
+                return (_logInCommand) ?? (_logInCommand = new DelegateCommand(LogIn));
+            }
+        }
+
+        private ICommand _certificateCommand;
+
+        public ICommand CertificateCommand
+        {
+            get
+            {
+                return (_certificateCommand) ?? (_certificateCommand = new DelegateCommand(Certificate));
             }
         }
 

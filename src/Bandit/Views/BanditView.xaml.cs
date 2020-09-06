@@ -1,17 +1,8 @@
 ﻿using Bandit.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using System.Windows.Forms;
+using MessageBox = System.Windows.MessageBox;
 
 namespace Bandit.Views
 {
@@ -20,10 +11,37 @@ namespace Bandit.Views
     /// </summary>
     public partial class BanditView : Window
     {
+        private NotifyIcon _trayIcon = new NotifyIcon();
+
         public BanditView()
         {
             InitializeComponent();
+            InitializeNotifyIcon();
             this.DataContext = new BanditViewModel();
+        }
+
+        private void InitializeNotifyIcon()
+        {
+            _trayIcon.Text = "Bandit";
+            _trayIcon.Icon = Properties.Resources.bandit; // 아이콘 등록.
+            _trayIcon.Click += delegate (object senders, EventArgs args) // 더블 클릭 이벤트 등록.
+            {
+                _trayIcon.Visible = false;
+                this.Show();
+            };
+        }
+
+        private void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show("프로그램을 트레이로 전환하시겠습니까?", "Pomodoro", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                _trayIcon.Visible = true;
+                this.Hide();
+
+                e.Cancel = true; // Cancel window closing.
+            }
         }
     }
 }

@@ -1,8 +1,5 @@
 ﻿using Bandit.Models;
 using Ionic.Zip;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,30 +12,23 @@ namespace Bandit.Utilities
     /// <summary>
     /// 드라이버와 관련된 기능을 제공하는 클래스입니다.
     /// </summary>
-    internal class DriverUtility
+    public class DriverUtility
     {
         #region ::Version-Related::
 
-        public string GetVersion(string driverPath)
-        {
-            if (!File.Exists(driverPath))
-            {
-                return null;
-            }
-
-            IWebDriver driver = new ChromeDriver(driverPath);
-            ICapabilities capabilities = ((RemoteWebDriver)driver).Capabilities;
-            return (string)(capabilities.GetCapability("chrome") as Dictionary<string, object>)["chromedriverVersion"];
-        }
-
+        /// <summary>
+        /// 지정된 버전이 존재하는지에 대한 여부를 반환합니다.
+        /// </summary>
+        /// <param name="version">존재 여부를 확인할 버전입니다.</param>
+        /// <returns>해당 버전의 존재 여부.</returns>
         public bool IsExistsVersion(Version version)
         {
             try
             {
                 bool result = false;
+
                 string url = string.Format(Settings.URL_CHROMEDRIVERS_DOWNLOAD, version.ToString());
 
-                // 응답 요청을 작성한다.
                 HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
                 request.Method = "HEAD";
 
@@ -58,12 +48,16 @@ namespace Bandit.Utilities
             }
             catch
             {
-                //Any exception will returns false. return false;
+                //Any exception will returns false.
                 return false;
             }
         }
 
-        internal List<Version> GetVersionList()
+        /// <summary>
+        /// 사용 가능한 버전 목록을 가져옵니다.
+        /// </summary>
+        /// <returns>사용 가능한 버전 목록.</returns>
+        public List<Version> GetVersions()
         {
             WebRequest webRequest = WebRequest.Create(Settings.URL_CHROMEDRIVERS_DOWNLOAD_LIST);
             using (StreamReader reader = new StreamReader(webRequest.GetResponse().GetResponseStream()))
@@ -74,9 +68,9 @@ namespace Bandit.Utilities
                 // 새로운 XML 문서를 생성한다.
                 XmlDocument document = new XmlDocument();
                 document.LoadXml(xml);
-                
+
                 XmlElement rootElement = document.DocumentElement;
-                
+
                 // 루트 엘리먼트에서 모든 Key 엘리먼트들의 목록을 불러온다.
                 XmlNodeList nodes = rootElement.GetElementsByTagName("Key");
 
@@ -102,7 +96,11 @@ namespace Bandit.Utilities
             }
         }
 
-        internal Version GetLatestVersion()
+        /// <summary>
+        /// 현재 최신 버전을 가져옵니다.
+        /// </summary>
+        /// <returns>현재 최신 버전.</returns>
+        public Version GetLatestVersion()
         {
             WebRequest webRequest = WebRequest.Create(Settings.URL_CHROMEDRIVERS_LATEST);
             using (StreamReader reader = new StreamReader(webRequest.GetResponse().GetResponseStream()))
@@ -119,12 +117,28 @@ namespace Bandit.Utilities
 
         #region ::Downloading-Related::
 
+        /// <summary>
+        /// 다운로드 진행률 변경 이벤트 핸들러입니다.
+        /// </summary>
+        /// <param name="progress">현재 다운로드 진행률입니다.</param>
         public delegate void DownloadProgressChangedEventHandler(double progress);
 
+        /// <summary>
+        /// 드라이버 다운로드가 완료되었을 때 호출되는 이벤트입니다.
+        /// </summary>
         public event AsyncCompletedEventHandler DownloadDriverCompleted;
+
+        /// <summary>
+        /// 드라이버 다운로드 진행률이 변경되었을 때 호출되는 이벤트입니다.
+        /// </summary>
         public event DownloadProgressChangedEventHandler DownloadProgressChanged;
 
-        internal void DownloadDriverAsync(Version version, string filePath)
+        /// <summary>
+        /// 드라이버를 비동기 방식으로 다운로드합니다. 이 메소드는 호출 스레드를 차단하지 않습니다.
+        /// </summary>
+        /// <param name="version">다운로드할 드라이버의 버전입니다.</param>
+        /// <param name="filePath">드라이버 패키지가 저장될 경로입니다.</param>
+        public void DownloadDriverAsync(Version version, string filePath)
         {
             string url = string.Format(Settings.URL_CHROMEDRIVERS_DOWNLOAD, version.ToString());
 
@@ -139,7 +153,7 @@ namespace Bandit.Utilities
                 }
                 catch (Exception ex)
                 {
-                    Reports.Instance.AddReport(Entities.ReportType.Warning, $"{ex.Message} {ex.StackTrace}");
+                    Reports.Instance.AddReport(Entities.ReportType.Warning, $"패키지 다운로드 중 오류가 발생했습니다. 다시 시도해주시기 바랍니다. {ex.Message} {ex.StackTrace}");
                 }
                 finally
                 {
@@ -162,10 +176,22 @@ namespace Bandit.Utilities
 
         #region ::Decompressing-Related::
 
+        /// <summary>
+        /// 압축 해제 진행률 변경 이벤트 핸들러입니다.
+        /// </summary>
+        /// <param name="progress">현재 압축 해제 진행률입니다.</param>
         public delegate void DecompressProgressChangedEventHandler(double progress);
 
+        /// <summary>
+        /// 압축 해제 진행률이 변경되었을 때 호출되는 이벤트입니다.
+        /// </summary>
         public event DecompressProgressChangedEventHandler DecompressProgressChanged;
 
+        /// <summary>
+        /// 지정된 패키지의 압축을 해제합니다.
+        /// </summary>
+        /// <param name="filePath">압축을 풀 패키지의 경로입니다.</param>
+        /// <param name="targetDirectory">압축 해제된 파일이 저장될 경로입니다.</param>
         public void DecompressFile(string filePath, string targetDirectory)
         {
             if (!File.Exists(filePath))

@@ -7,8 +7,8 @@
              xmlns:local="clr-namespace:Bandit.Dialogs"
              mc:Ignorable="d" 
              d:DesignHeight="120" d:DesignWidth="220">
-    <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="10">
-        <materialDesign:PackIcon Kind="TooltipPerson" HorizontalAlignment="Center" Width="50" Height="50" Opacity=".68"/>
-        <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" HorizontalAlignment="Center" Text="작업이 완료되었습니다!" Opacity=".68"/>
+    <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="20">
+        <materialDesign:PackIcon Kind="TooltipPerson" HorizontalAlignment="Center" Width="30" Height="30" Opacity=".68"/>
+        <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}" HorizontalAlignment="Center" Text="작업이 완료되었습니다!" Opacity=".68"/>
     </StackPanel>
 </UserControl>

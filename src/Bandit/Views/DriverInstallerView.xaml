@@ -1,11 +1,10 @@
 ﻿<Window x:Class="Bandit.Views.DriverInstallerView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Bandit.Views"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -22,8 +21,13 @@
     </i:Interaction.Triggers>
     <Grid>
         <StackPanel Orientation="Vertical" Margin="20" VerticalAlignment="Center">
+            <!--Progress Caption-->
             <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" TextWrapping="Wrap" Text="{Binding ProgressCaption}" Opacity=".68"/>
-            <ProgressBar Margin="0 12 0 0" Value="{Binding ProgressValue}"/>
+            
+            <!--Progress Bar-->
+            <ProgressBar Margin="0 12 0 0" materialDesign:TransitionAssist.DisableTransitions="True" Value="{Binding ProgressValue}"/>
+            
+            <!--Progress Value-->
             <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}" Margin="0 4 0 0" TextWrapping="Wrap" Text="{Binding ProgressValue}" Opacity=".68"/>
         </StackPanel>
     </Grid>

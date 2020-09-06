@@ -22,7 +22,6 @@ namespace Bandit.Models
                 if (_instance == null)
                 {
                     _instance = new Reports();
-                    _instance.RecordedReports = new ObservableCollection<Report>();
                 }
 
                 return _instance;
@@ -35,10 +34,28 @@ namespace Bandit.Models
 
         #endregion
 
+        #region ::Properties::
+
         /// <summary>
         /// 현재까지 기록된 보고서들의 목록입니다.
         /// </summary>
         public ObservableCollection<Report> RecordedReports { get; set; }
+
+        #endregion
+
+        #region ::Constructors::
+
+        /// <summary>
+        /// 새로운 보고서 클래스의 인스턴스를 생성합니다.
+        /// </summary>
+        public Reports()
+        {
+            RecordedReports = new ObservableCollection<Report>();
+        }
+
+        #endregion
+
+        #region ::Methods::
 
         /// <summary>
         /// 새로운 보고서를 추가합니다.
@@ -70,5 +87,7 @@ namespace Bandit.Models
         {
             RecordedReports.Clear();
         }
+
+        #endregion
     }
 }

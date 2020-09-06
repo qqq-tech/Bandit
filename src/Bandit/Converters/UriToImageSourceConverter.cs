@@ -8,6 +8,9 @@ using System.Windows.Media.Imaging;
 
 namespace Bandit.Converters
 {
+    /// <summary>
+    /// Uri을(를) 통해 이미지를 불러오는 Converter 입니다.
+    /// </summary>
     [ValueConversion(typeof(Uri), typeof(ImageSource))]
     public class UriToImageSourceConverter : IValueConverter
     {

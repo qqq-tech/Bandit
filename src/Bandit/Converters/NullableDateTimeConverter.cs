@@ -4,6 +4,9 @@ using System.Windows.Data;
 
 namespace Bandit.Converters
 {
+    /// <summary>
+    /// DateTime 개체의 Nullable 여부를 변경시켜주는 Converter 입니다.
+    /// </summary>
     [ValueConversion(typeof(DateTime), typeof(Nullable<DateTime>))]
     public class NullableDateTimeConverter : IValueConverter
     {

@@ -4,6 +4,9 @@ using System.Windows.Data;
 
 namespace Bandit.Converters
 {
+    /// <summary>
+    /// 입력된 Boolean을(를) 역전시켜주는 Converter 입니다.
+    /// </summary>
     [ValueConversion(typeof(bool), typeof(bool))]
     public class InverseBooleanConverter : IValueConverter
     {

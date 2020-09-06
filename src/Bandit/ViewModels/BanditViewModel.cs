@@ -6,20 +6,9 @@ using Bandit.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
-using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 using Timer = System.Timers.Timer;
 
 namespace Bandit.ViewModels
@@ -40,7 +29,7 @@ namespace Bandit.ViewModels
 
         public BanditViewModel()
         {
-            // Initialize settings, reports, and band account.
+            // 보고서 초기화.
             _reports = Reports.Instance;
         }
 
@@ -80,11 +69,11 @@ namespace Bandit.ViewModels
         {
             get
             {
-                return BandAccount.Instance.Profile.ImageUrl;
+                return Account.Instance.Profile.ImageUrl;
             }
             set
             {
-                BandAccount.Instance.Profile.ImageUrl = value;
+                Account.Instance.Profile.ImageUrl = value;
                 RaisePropertyChanged();
             }
         }
@@ -93,14 +82,14 @@ namespace Bandit.ViewModels
         {
             get
             {
-                if (BandAccount.Instance.Profile.Name == null)
-                    BandAccount.Instance.Profile.Name = "로그인이 필요합니다";
+                if (Account.Instance.Profile.Name == null)
+                    Account.Instance.Profile.Name = "로그인이 필요합니다";
 
-                return BandAccount.Instance.Profile.Name;
+                return Account.Instance.Profile.Name;
             }
             set
             {
-                BandAccount.Instance.Profile.Name = value;
+                Account.Instance.Profile.Name = value;
                 RaisePropertyChanged();
             }
         }
@@ -109,76 +98,45 @@ namespace Bandit.ViewModels
         {
             get
             {
-                return BandAccount.Instance.IsInitialized;
+                return Account.Instance.IsInitialized;
             }
             set
             {
-                BandAccount.Instance.IsInitialized = true;
+                Account.Instance.IsInitialized = true;
                 RaisePropertyChanged();
             }
         }
 
         #endregion
 
-        #region ::Command::
+        #region ::UI::
 
-        private ICommand _accountLogInCommand;
-
-        public ICommand AccountLogInCommand
+        private void ShowSettings()
         {
-            get
+            if (!IsAccountInitialized)
             {
-                return (_accountLogInCommand) ?? (_accountLogInCommand = new DelegateCommand(AccountLogIn));
+                SettingsView settingsView = new SettingsView();
+                settingsView.ShowDialog();
+
+                // View에 프로퍼티 값 변경을 알려준다.
+                RaisePropertyChanged("ProfileImageUrl");
+                RaisePropertyChanged("ProfileName");
+                RaisePropertyChanged("IsAccountInitialized");
             }
-        }
-
-        private ICommand _accountLogOutCommand;
-
-        public ICommand AccountLogOutCommand
-        {
-            get
+            else
             {
-                return (_accountLogOutCommand) ?? (_accountLogOutCommand = new DelegateCommand(AccountLogOut));
-            }
-        }
-
-        private ICommand _testCommand;
-
-        public ICommand TestCommand
-        {
-            get
-            {
-                return (_testCommand) ?? (_testCommand = new DelegateCommand(Test));
-            }
-        }
-
-        private ICommand _settingsCommand;
-
-        public ICommand SettingsCommand
-        {
-            get
-            {
-                return (_settingsCommand) ?? (_settingsCommand = new DelegateCommand(ControlSettings));
-            }
-        }
-
-        private ICommand _taskCommand;
-
-        public ICommand TaskCommand
-        {
-            get
-            {
-                return (_taskCommand) ?? (_taskCommand = new DelegateCommand(ControlBanditTask));
+                MessageBox.Show("로그아웃을 하셔야만 설정을 변경할 수 있습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
             }
         }
 
         #endregion
 
-        #region ::Methods::
+        #region ::Account::
 
-        private void AccountLogIn()
+        private void AccountLogin()
         {
-            if (!BandAccount.Instance.IsInitialized)
+            if (!Account.Instance.IsInitialized)
             {
                 LoginView loginView = new LoginView();
                 loginView.ShowDialog();
@@ -195,7 +153,7 @@ namespace Bandit.ViewModels
             }
         }
 
-        private void AccountLogOut()
+        private void AccountLogout()
         {
             if (CurrentTaskState == TaskState.Loading || CurrentTaskState == TaskState.Running || CurrentTaskState == TaskState.WebProcessing)
             {
@@ -203,13 +161,13 @@ namespace Bandit.ViewModels
                 return;
             }
 
-            if (BandAccount.Instance.IsInitialized)
+            if (Account.Instance.IsInitialized)
             {
                 if (MessageBox.Show("정말 로그아웃 하시겠습니까?", "Bandit", MessageBoxButton.OKCancel, MessageBoxImage.Question) != MessageBoxResult.OK)
                     return;
 
                 // 계정 정보를 초기화한다.
-                BandAccount.Instance = new BandAccount();
+                Account.Instance = new Account();
 
                 // 밴드 유틸리티를 초기화 후 리소스를 해제한다.
                 BandUtility.Instance.Stop();
@@ -230,42 +188,104 @@ namespace Bandit.ViewModels
             }
         }
 
-        private void Test()
+        #endregion
+
+        #region ::Bandit Task::
+
+        private async void AutomaticTask(object sender, ElapsedEventArgs e)
         {
-            if (!BandAccount.Instance.IsInitialized)
+            CurrentTaskState = TaskState.WebProcessing;
+
+            BandUtility band = BandUtility.Instance;
+
+            List<string> posts = await band.GetFeedAsync();
+
+            foreach (string post in posts)
             {
-                TestView testView = new TestView();
-                testView.ShowDialog();
+                if (_postCaches.Contains(post))
+                    continue;
+
+                await band.CheckAttendanceAsync(post);
+                _postCaches.Add(post);
             }
-            else
-            {
-                MessageBox.Show("로그아웃을 하셔야만 개발자 메뉴로 진입할 수 있습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return;
-            }
+
+            CurrentTaskState = TaskState.Running;
         }
 
-        private void ControlSettings()
+        private async void ManualTask(object sender, ElapsedEventArgs e)
         {
-            if (!BandAccount.Instance.IsInitialized)
-            {
-                SettingsView settingsView = new SettingsView();
-                settingsView.ShowDialog();
+            CurrentTaskState = TaskState.WebProcessing;
 
-                // View에 프로퍼티 값 변경을 알려준다.
-                RaisePropertyChanged("ProfileImageUrl");
-                RaisePropertyChanged("ProfileName");
-                RaisePropertyChanged("IsAccountInitialized");
-            }
-            else
+            BandUtility band = BandUtility.Instance;
+
+            // 예약 시간 검사.
+            foreach (DateTime time in Settings.Instance.ReservedTimes)
             {
-                MessageBox.Show("로그아웃을 하셔야만 설정을 변경할 수 있습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return;
+                // 소수점 이하 자리를 버리기 위해 버림 함수 사용.
+                if (Math.Truncate(DateTime.Now.TimeOfDay.TotalMinutes) == time.TimeOfDay.TotalMinutes)
+                {
+                    List<string> posts = await band.GetFeedAsync();
+
+                    foreach (string post in posts)
+                    {
+                        if (_postCaches.Contains(post))
+                            continue;
+
+                        await band.CheckAttendanceAsync(post);
+                        _postCaches.Add(post);
+                    }
+                }
             }
+
+            CurrentTaskState = TaskState.Running;
         }
 
-        private void ControlBanditTask()
+        private async void ControlBanditTask()
         {
-            if (CurrentTaskState == TaskState.Running)
+
+            if (CurrentTaskState == TaskState.Idle)
+            {
+                if (!Account.Instance.IsInitialized)
+                {
+                    MessageBox.Show("밴딧 작업을 진행하기에 앞서 밴드 계정으로 로그인 해주시기 바랍니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+                if (MessageBox.Show("소프트웨어 사용에 대한 면책조항\n\n" +
+                    "본 소프트웨어는 Selenium 프로젝트를 이용한 웹 자동화 테스트를 위한 용도로 개발되었으며, 다른 용도로의 사용은 전혀 고려하지 않았습니다. " +
+                    "또한 소프트웨어를 이용함으로써 생길 수 있는 모든 법적 문제의 책임은 사용자에게 있습니다. " +
+                    "개발자는 오직 소프트웨어의 소스코드로 인해 발생한 문제에만 책임을 집니다.", "Bandit", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                {
+                    return;
+                }
+
+                Reports.Instance.AddReport(ReportType.Information, "밴딧 작업을 시작합니다!");
+
+                CurrentTaskState = TaskState.Loading;
+
+                // 밴드 유틸리티 초기화.
+                BandUtility band = BandUtility.Instance;
+                _postCaches.Clear();
+                _postCaches.AddRange(await band.GetFeedAsync());
+
+                CurrentTaskState = TaskState.Running;
+
+                if (Settings.Instance.IsAutomatic)
+                {
+                    _timer.Interval = Settings.Instance.RefreshInterval * 60000; // 자동 모드.
+                    _timer.Elapsed += new ElapsedEventHandler(AutomaticTask);
+                    _timer.Enabled = true;
+                }
+                else
+                {
+                    _timer.Interval = 60000; // 시간 지정 모드.
+                    _timer.Elapsed += new ElapsedEventHandler(ManualTask);
+                    _timer.Enabled = true;
+                }
+
+                _timer.Start();
+            }
+            else if (CurrentTaskState == TaskState.Running)
             {
                 _timer.Stop();
                 CurrentTaskState = TaskState.Stopping;
@@ -282,89 +302,49 @@ namespace Bandit.ViewModels
                 MessageBox.Show("밴딧 작업 진행중에는 작업 상태를 변경할 수 없습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
-            else if (CurrentTaskState == TaskState.Idle)
+        }
+
+        #endregion
+
+        #region ::Commands::
+
+        private ICommand _accountLoginCommand;
+
+        public ICommand AccountLoginCommand
+        {
+            get
             {
-                if (!BandAccount.Instance.IsInitialized)
-                {
-                    MessageBox.Show("밴딧 작업을 진행하기에 앞서 밴드 계정으로 로그인 해주시기 바랍니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                    return;
-                }
+                return (_accountLoginCommand) ?? (_accountLoginCommand = new DelegateCommand(AccountLogin));
+            }
+        }
 
-                if (MessageBox.Show("소프트웨어 사용에 대한 면책조항\n\n" +
-                    "본 소프트웨어(이하 '소프트웨어')는 Selenium 프로젝트를 이용한 웹 자동화 테스트를 위한 용도로 개발되었으며, 다른 용도로의 사용은 전혀 고려하지 않았습니다. " +
-                    "또한 소프트웨어를 이용함으로써 생길 수 있는 모든 법적 문제의 책임은 사용자에게 있습니다. " +
-                    "개발자는 오직 소프트웨어의 소스코드로 인해 발생한 문제에만 책임을 가집니다.", "Bandit", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
-                {
-                    return;
-                }
+        private ICommand _accountLogoutCommand;
 
-                Reports.Instance.AddReport(ReportType.Information, "밴딧 작업을 시작합니다!");
+        public ICommand AccountLogoutCommand
+        {
+            get
+            {
+                return (_accountLogoutCommand) ?? (_accountLogoutCommand = new DelegateCommand(AccountLogout));
+            }
+        }
 
-                CurrentTaskState = TaskState.Loading;
+        private ICommand _settingsCommand;
 
-                BandUtility band = BandUtility.Instance;
-                _postCaches.Clear();
-                _postCaches.AddRange(band.GetFeed());
+        public ICommand SettingsCommand
+        {
+            get
+            {
+                return (_settingsCommand) ?? (_settingsCommand = new DelegateCommand(ShowSettings));
+            }
+        }
 
-                band.CheckAttendance("https://band.us/band/81056748/post/7");
+        private ICommand _taskCommand;
 
-                CurrentTaskState = TaskState.Running;
-
-                if (Settings.Instance.IsAutomatic)
-                {
-                    _timer.Interval = Settings.Instance.RefreshInterval * 60000; // 자동 모드.
-                    _timer.Enabled = true;
-
-                    _timer.Elapsed += new ElapsedEventHandler((sender, e) =>
-                    {
-                        CurrentTaskState = TaskState.WebProcessing;
-
-                        List<string> posts = band.GetFeed();
-
-                        foreach (string post in posts)
-                        {
-                            if (_postCaches.Contains(post))
-                                continue;
-
-                            band.CheckAttendance(post);
-                            _postCaches.Add(post);
-                        }
-
-                        CurrentTaskState = TaskState.Running;
-                    });
-                }
-                else
-                {
-                    _timer.Interval = 60000; // 시간 지정 모드.
-                    _timer.Enabled = true;
-
-                    _timer.Elapsed += new ElapsedEventHandler((sender, e) =>
-                    {
-                        CurrentTaskState = TaskState.WebProcessing;
-
-                        foreach (DateTime time in Settings.Instance.ReservatedTimes)
-                        {
-                            // 소수점 이하 자리를 버리기 위해 버림 함수 사용.
-                            if (Math.Truncate(DateTime.Now.TimeOfDay.TotalMinutes) == time.TimeOfDay.TotalMinutes)
-                            {
-                                List<string> posts = band.GetFeed();
-
-                                foreach (string post in posts)
-                                {
-                                    if (_postCaches.Contains(post))
-                                        continue;
-
-                                    band.CheckAttendance(post);
-                                    _postCaches.Add(post);
-                                }
-                            }
-                        }
-
-                        CurrentTaskState = TaskState.Running;
-                    });
-                }
-
-                _timer.Start();
+        public ICommand TaskCommand
+        {
+            get
+            {
+                return (_taskCommand) ?? (_taskCommand = new DelegateCommand(ControlBanditTask));
             }
         }
 

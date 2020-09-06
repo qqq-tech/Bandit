@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -20,7 +19,7 @@ namespace Bandit.ViewModels
 
         private Settings _settings;
 
-        private DriverUtility _utility = new DriverUtility();
+        private DriverUtility _driver = new DriverUtility();
 
         #endregion
 
@@ -139,17 +138,17 @@ namespace Bandit.ViewModels
             }
         }
 
-        private ObservableCollection<DateTime> _reservatedTimes = new ObservableCollection<DateTime>();
+        private ObservableCollection<DateTime> _reservedTimes = new ObservableCollection<DateTime>();
 
-        public ObservableCollection<DateTime> ReservatedTimes
+        public ObservableCollection<DateTime> ReservedTimes
         {
             get
             {
-                return _reservatedTimes;
+                return _reservedTimes;
             }
             set
             {
-                _reservatedTimes = value;
+                _reservedTimes = value;
                 RaisePropertyChanged();
             }
         }
@@ -188,23 +187,67 @@ namespace Bandit.ViewModels
 
         #region ::Constructors::
 
-        private ObservableCollection<DateTime> ListToObservableCollection(List<DateTime> list)
-        {
-            ObservableCollection<DateTime> collection = new ObservableCollection<DateTime>();
-            
-            foreach (DateTime time in list)
-            {
-                collection.Add(time);
-            }
-
-            return collection;
-        }
-
         public SettingsViewModel()
         {
             _settings = Settings.Instance;
-            VersionList = new ObservableCollection<Version>(_utility.GetVersionList());
-            ReservatedTimes = ListToObservableCollection(_settings.ReservatedTimes);
+
+            VersionList = new ObservableCollection<Version>(_driver.GetVersions());
+
+            // 예약 시간 리스트 불러오기.
+            foreach (DateTime time in _settings.ReservedTimes)
+            {
+                ReservedTimes.Add(time);
+            }
+        }
+
+        #endregion
+
+        #region ::Methods::
+
+        private void ApplyDriver()
+        {
+            if (CurrentVersion != SelectedVersion)
+            {
+                DriverInstallerView installer = new DriverInstallerView(SelectedVersion);
+                installer.ShowDialog();
+                installer.Close();
+
+                CurrentVersion = SelectedVersion;
+            }
+            else
+            {
+                MessageBox.Show("같은 버전의 드라이버로는 변경할 수 없습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+        }
+
+        private void AddTime()
+        {
+            if (!ReservedTimes.Contains(SelectedTime))
+            {
+                ReservedTimes.Add(SelectedTime);
+                ReservedTimes = new ObservableCollection<DateTime>(ReservedTimes.OrderBy(time => time));
+                Settings.Instance.ReservedTimes = ReservedTimes.ToList();
+
+                Reports.Instance.AddReport(ReportType.Added, $"'{SelectedTime.Hour}:{SelectedTime.Minute}'에 갱신 예약이 추가되었습니다.");
+            }
+            else
+            {
+                MessageBox.Show("이미 같은 시간에 갱신 예약이 되어 있습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+        }
+
+        private void RemoveTime()
+        {
+            if (SelectedIndex != -1)
+            {
+                DateTime selectedTime = ReservedTimes[SelectedIndex];
+                ReservedTimes.RemoveAt(SelectedIndex);
+                CollectionViewSource.GetDefaultView(ReservedTimes).Refresh(); // 번호 초기화를 위해 컬렉션을 새로고침함.
+                Settings.Instance.ReservedTimes = ReservedTimes.ToList();
+
+                Reports.Instance.AddReport(ReportType.Removed, $"'{selectedTime.Hour,2:D2}:{selectedTime.Minute,2:D2}'의 갱신 예약이 제거되었습니다.");
+            }
         }
 
         #endregion
@@ -238,56 +281,6 @@ namespace Bandit.ViewModels
             get
             {
                 return (_removeTimeCommand) ?? (_removeTimeCommand = new DelegateCommand(RemoveTime));
-            }
-        }
-
-        #endregion
-
-        #region ::Methods::
-
-        private void ApplyDriver()
-        {
-            if (CurrentVersion != SelectedVersion)
-            {
-                DriverInstallerView installer = new DriverInstallerView(SelectedVersion);
-                installer.ShowDialog();
-                installer.Close();
-
-                CurrentVersion = SelectedVersion;
-            }
-            else
-            {
-                MessageBox.Show("같은 버전의 드라이버로는 변경할 수 없습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-            }
-        }
-
-        private void AddTime()
-        {
-            if (!ReservatedTimes.Contains(SelectedTime))
-            {
-                ReservatedTimes.Add(SelectedTime);
-                ReservatedTimes = new ObservableCollection<DateTime>(ReservatedTimes.OrderBy(time => time));
-                Settings.Instance.ReservatedTimes = ReservatedTimes.ToList();
-
-                Reports.Instance.AddReport(ReportType.Added, $"'{SelectedTime.Hour}:{SelectedTime.Minute}'에 갱신 예약이 추가되었습니다.");
-            }
-            else
-            {
-                MessageBox.Show("이미 같은 시간에 갱신 예약이 되어 있습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return;
-            }
-        }
-
-        private void RemoveTime()
-        {
-            if (SelectedIndex != -1)
-            {
-                DateTime selectedTime = ReservatedTimes[SelectedIndex];
-                ReservatedTimes.RemoveAt(SelectedIndex);
-                CollectionViewSource.GetDefaultView(ReservatedTimes).Refresh(); // 번호 초기화를 위해 컬렉션을 새로고침한다.
-                Settings.Instance.ReservatedTimes = ReservatedTimes.ToList();
-
-                Reports.Instance.AddReport(ReportType.Removed, $"'{selectedTime.Hour,2:D2}:{selectedTime.Minute,2:D2}'의 갱신 예약이 제거되었습니다.");
             }
         }
 
