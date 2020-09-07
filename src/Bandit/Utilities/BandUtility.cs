@@ -94,6 +94,16 @@ namespace Bandit.Utilities
 
         #region ::General::
 
+        public void KillProcess()
+        {
+            Process[] processList = Process.GetProcessesByName("chromedriver.exe");
+
+            foreach (Process processList_item in processList)
+            {
+                processList_item.Kill();
+            }
+        }
+
         public async Task StartAsync()
         {
             var task = new Task(() =>
@@ -102,6 +112,8 @@ namespace Bandit.Utilities
                 {
                     try
                     {
+                        KillProcess();
+
                         // 드라이버 서비스를 초기화한다.
                         string driverPath = Path.Combine(Directory.GetCurrentDirectory(), "chromedriver.exe");
                         Reports.Instance.AddReportWithDispatcher(ReportType.Information, $"크롬 드라이버 경로가 '{driverPath}'(으)로 지정되었습니다.");
@@ -186,11 +198,13 @@ namespace Bandit.Utilities
             if (_driver != null)
             {
                 _driver.Quit();
+                KillProcess();
                 Dispose();
                 Reports.Instance.AddReport(ReportType.Information, $"크롬 드라이버가 중지되었습니다.");
             }
             else
             {
+                KillProcess();
                 Dispose();
                 Environment.Exit(0);
                 Reports.Instance.AddReport(ReportType.Information, $"크롬 드라이버 중지가 거부되었습니다.");
@@ -354,11 +368,34 @@ namespace Bandit.Utilities
                     return false;
                 }
 
-                // 페이지 전환 여부를 통해 PIN 일치 여부를 확인한다.
-                if (_driver.Url.Contains(Settings.URL_EMAIL_LOGIN_PIN))
+                Func<IWebDriver, bool> pinValidTask = new Func<IWebDriver, bool>((IWebDriver Web) =>
                 {
-                    Reports.Instance.AddReportWithDispatcher(ReportType.Caution, $"PIN이 일치하지 않습니다.");
-                    return false;
+                    try
+                    {
+                        IWebElement element = Web.FindElement(By.Id("errorMessage"));
+                        return false;
+                    }
+                    catch (NoSuchElementException)
+                    {
+                        return true;
+                    }
+                });
+
+                // PIN 인증 여부 확인.
+                try
+                {
+                    if (_wait.Until(pinValidTask))
+                    {
+                        result = true;
+                    }
+                    else
+                    {
+                        result = false;
+                    }
+                }
+                catch (WebDriverTimeoutException)
+                {
+                    result = false;
                 }
 
                 // 결괏값 반환.

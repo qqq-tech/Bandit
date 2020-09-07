@@ -5,6 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Bandit.Dialogs"
              mc:Ignorable="d" 
-             d:DesignHeight="80" d:DesignWidth="80">
-    <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Width="30" Height="30" Margin="25" IsIndeterminate="True"/>
+             d:DesignHeight="140" d:DesignWidth="340">
+    <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="20">
+        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Width="30" Height="30" Margin="25" IsIndeterminate="True"/>
+        <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}" HorizontalAlignment="Center" Text="작업이 오래 걸릴 수 있으니 기다려주세요!" Opacity=".68"/>
+    </StackPanel>
 </UserControl>

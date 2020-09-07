@@ -225,10 +225,12 @@ namespace Bandit.ViewModels
         /// </summary>
         private async void Certificate()
         {
+            Dialog = new ProgressDialog();
             bool result = await _bandUtility.CertifyAsync(Identity, Pin);
 
             if (!result)
             {
+                Dialog = new PinInputDialog();
                 MessageBox.Show("PIN이 일치하지 않거나 알 수 없는 오류가 발생하였습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }

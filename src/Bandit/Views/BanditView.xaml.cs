@@ -1,4 +1,5 @@
-﻿using Bandit.ViewModels;
+﻿using Bandit.Utilities;
+using Bandit.ViewModels;
 using System;
 using System.Windows;
 using System.Windows.Forms;
@@ -41,6 +42,15 @@ namespace Bandit.Views
                 this.Hide();
 
                 e.Cancel = true; // Cancel window closing.
+            }
+            else
+            {
+                if (BandUtility.Instance.IsRunning)
+                {
+                    BandUtility.Instance.Stop();
+                }
+
+                BandUtility.Instance.KillProcess();
             }
         }
     }
