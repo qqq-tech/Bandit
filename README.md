@@ -13,7 +13,7 @@
 밴딧은 네이버 밴드를 이용한 원격 수업 중 출석체크의 피곤함을 덜어주기 위해 만들어진 도구입니다. 밴딧은 Selenium 프로젝트와 Chrome을(를) 사용하여 출석을 자동화해줍니다.
 
 ## Screenshots
-![Bandit](./screenshots/bandit.png)
+![Bandit](./image/bandit.png)
 
 ## Install
 [GitHub Releases](https://github.com/junimiso04/Bandit/releases)을(를) 통해 Bandit의 최신 릴리즈를 다운로드하실 수 있습니다.
