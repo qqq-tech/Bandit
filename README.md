@@ -1,7 +1,6 @@
 # Bandit
-[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fjunimiso04%2FBandit&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=true)](https://hits.seeyoufarm.com)
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/junimiso04/Bandit?logo=GitHub&logoColor=White&style=flat-square)](https://github.com/junimiso04/Bandit/releases)
 [![GitHub](https://img.shields.io/github/license/junimiso04/Bandit?style=flat-square)](https://github.com/junimiso04/Bandit/blob/master/LICENSE)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/junimiso04/Bandit?logo=GitHub&logoColor=White&style=flat-square)](https://github.com/junimiso04/Bandit/releases)
 
 | |master|develop|
 |------|------|------|
@@ -56,6 +55,8 @@
 ## TO-DO
  * 한 게시물에서 여러개의 출석 체크를 처리하기.
  * 여러 게시물이 동시에 입력될 경우에 제일 최근에 작성된 게시물의 출석만 처리되는 오류를 해결하기.
+ * 로그인과 로그아웃 기능, 새 글 피드 불러오기 기능, 출석 체크 기능 등의 메소드들을 비동기 처리하기.
+ * 트레이 아이콘 전환 기능 추가하기.
  * 코드 최적화 및 주석 정리하기.
  * 추가적인 예외 경우 처리하기.
 
