@@ -148,6 +148,7 @@ namespace Bandit.ViewModels
             // 이메일 유효성 검사.
             if (!IsValidEmailAddress(Identity))
             {
+                IsOpenDialog = false;
                 MessageBox.Show("유효하지 않은 이메일 주소입니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return false;
             }
@@ -159,6 +160,7 @@ namespace Bandit.ViewModels
 
             if (!isValidPassword)
             {
+                IsOpenDialog = false;
                 MessageBox.Show("비밀번호는 8자 이상, 20자 이하의 영문과 숫자, 특수기호의 나열로 구성되어야 합니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return false;
             }
@@ -176,7 +178,6 @@ namespace Bandit.ViewModels
 
             if (!Validate())
             {
-                IsOpenDialog = false;
                 return;
             }
 

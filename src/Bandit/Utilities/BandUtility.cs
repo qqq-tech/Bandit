@@ -189,7 +189,7 @@ namespace Bandit.Utilities
                 }
             });
             task.Start();
-            await task.ConfigureAwait(false); ;
+            await task.ConfigureAwait(false);
         }
 
         public void Stop()
@@ -311,7 +311,7 @@ namespace Bandit.Utilities
                 }
             });
             task.Start();
-            await task.ConfigureAwait(false); ;
+            await task.ConfigureAwait(false);
 
             return task.Result;
         }
@@ -405,7 +405,7 @@ namespace Bandit.Utilities
                 }
             });
             task.Start();
-            await task.ConfigureAwait(false); ;
+            await task.ConfigureAwait(false);
 
             return task.Result;
         }
@@ -539,7 +539,7 @@ namespace Bandit.Utilities
                 }
             });
             task.Start();
-            await task.ConfigureAwait(false); ;
+            await task.ConfigureAwait(false);
 
             return task.Result;
         }
@@ -630,7 +630,7 @@ namespace Bandit.Utilities
                 }
             });
             task.Start();
-            await task.ConfigureAwait(false); ;
+            await task.ConfigureAwait(false);
         }
 
         #endregion
