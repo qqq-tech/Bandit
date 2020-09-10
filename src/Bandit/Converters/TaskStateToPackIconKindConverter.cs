@@ -21,11 +21,11 @@ namespace Bandit.Converters
                 throw new InvalidOperationException("The target must be a PackIconKind!");
             }
 
-            if (((TaskState)value) == TaskState.Idle)
+            if (((TaskState)value) == TaskState.Idle || ((TaskState)value) == TaskState.Stopping)
             {
                 return PackIconKind.Play;
             }
-            else
+            else 
             {
                 return PackIconKind.Pause;
             }

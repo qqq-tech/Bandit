@@ -12,7 +12,7 @@ namespace Bandit.Views
     /// </summary>
     public partial class BanditView : Window
     {
-        private NotifyIcon _trayIcon = new NotifyIcon();
+        private readonly NotifyIcon _trayIcon = new NotifyIcon();
 
         public BanditView()
         {
@@ -25,7 +25,7 @@ namespace Bandit.Views
         {
             _trayIcon.Text = "Bandit";
             _trayIcon.Icon = Properties.Resources.bandit; // 아이콘 등록.
-            _trayIcon.Click += delegate (object senders, EventArgs args) // 더블 클릭 이벤트 등록.
+            _trayIcon.Click += delegate // 더블 클릭 이벤트 등록.
             {
                 _trayIcon.Visible = false;
                 this.Show();
@@ -50,7 +50,8 @@ namespace Bandit.Views
                     BandUtility.Instance.Stop();
                 }
 
-                BandUtility.Instance.KillProcess();
+                BandUtility.Instance.KillCurrentDriver();
+                BandUtility.Instance.KillDrivers();
             }
             else
             {

@@ -209,7 +209,7 @@ namespace Bandit.Utilities
                 using (ZipFile zip = new ZipFile(filePath))
                 {
                     /// 압축 해제 진행률 표시를 위한 이벤트 핸들러 등록.
-                    zip.ReadProgress += new EventHandler<ReadProgressEventArgs>(OnDecompressProgressChanged);
+                    zip.ReadProgress += OnDecompressProgressChanged;
                     zip.ExtractAll(targetDirectory, ExtractExistingFileAction.OverwriteSilently);
                 }
             }

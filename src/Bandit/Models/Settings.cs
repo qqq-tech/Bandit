@@ -43,52 +43,52 @@ namespace Bandit.Models
         /// <summary>
         /// 설정 파일의 경로입니다.
         /// </summary>
-        public const string PATH_SETTINGS = @".\data\settings.json";
+        public static readonly string PATH_SETTINGS = @".\data\settings.json";
 
         /// <summary>
         /// 크롬 드라이버 실행 파일의 경로입니다.
         /// </summary>
-        public const string PATH_CHROMEDRIVER = @".\chromedriver.exe";
+        public static readonly string PATH_CHROMEDRIVER = @".\chromedriver.exe";
 
         /// <summary>
         /// 크롬 드라이버의 다운로드 가능한 버전 리스트의 URL 주소입니다.
         /// </summary>
-        public const string URL_CHROMEDRIVERS_DOWNLOAD_LIST = "http://chromedriver.storage.googleapis.com/";
+        public static readonly string URL_CHROMEDRIVERS_DOWNLOAD_LIST = "http://chromedriver.storage.googleapis.com/";
 
         /// <summary>
         /// 크롬 드라이버의 최신 릴리스 버전을 가져올 수 있는 URL 주소입니다.
         /// </summary>
-        public const string URL_CHROMEDRIVERS_LATEST = "https://chromedriver.storage.googleapis.com/LATEST_RELEASE";
+        public static readonly string URL_CHROMEDRIVERS_LATEST = "https://chromedriver.storage.googleapis.com/LATEST_RELEASE";
 
         /// <summary>
         /// 크롬 드라이버를 다운로드 할 수 있는 URL 주소입니다. string.Format() 메소드를 이용하여 버전 정보를 입력한 후 사용하십시오.
         /// </summary>
-        public const string URL_CHROMEDRIVERS_DOWNLOAD = "https://chromedriver.storage.googleapis.com/{0}/chromedriver_win32.zip";
+        public static readonly string URL_CHROMEDRIVERS_DOWNLOAD = "https://chromedriver.storage.googleapis.com/{0}/chromedriver_win32.zip";
 
         /// <summary>
         /// 밴드 이메일 로그인 아이디 입력 페이지의 URL 주소입니다.
         /// </summary>
-        public const string URL_EMAIL_LOGIN_ID = "https://auth.band.us/email_login";
+        public static readonly string URL_EMAIL_LOGIN_ID = "https://auth.band.us/email_login";
 
         /// <summary>
         /// 밴드 이메일 로그인 비밀번호 입력 페이지의 URL 주소입니다.
         /// </summary>
-        public const string URL_EMAIL_LOGIN_PW = "https://auth.band.us/continue_email_login";
+        public static readonly string URL_EMAIL_LOGIN_PW = "https://auth.band.us/continue_email_login";
 
         /// <summary>
         /// 밴드 이메일 로그인 PIN 입력 페이지의 URL 주소입니다.
         /// </summary>
-        public const string URL_EMAIL_LOGIN_PIN = "https://auth.band.us/b/validation/phone_number";
+        public static readonly string URL_EMAIL_LOGIN_PIN = "https://auth.band.us/b/validation/phone_number";
 
         /// <summary>
         /// 밴드 메인 페이지의 URL 주소입니다.
         /// </summary>
-        public const string URL_BAND = "https://band.us";
+        public static readonly string URL_BAND = "https://band.us";
 
         /// <summary>
         /// 밴드 새 글 피드 페이지의 URL 주소입니다.
         /// </summary>
-        public const string URL_FEEDS_PAGE = "https://band.us/feed";
+        public static readonly string URL_FEEDS_PAGE = "https://band.us/feed";
 
         #endregion
 
@@ -187,7 +187,9 @@ namespace Bandit.Models
             Settings settings = JsonConvert.DeserializeObject<Settings>(jsonString);
 
             if (Instance.ReservedTimes == null)
+            {
                 Instance.ReservedTimes = new List<DateTime>();
+            }
 
             return settings;
         }

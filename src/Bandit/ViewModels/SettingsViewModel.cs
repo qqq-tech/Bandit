@@ -17,9 +17,9 @@ namespace Bandit.ViewModels
     {
         #region ::Fields:
 
-        private Settings _settings;
+        private readonly Settings _settings;
 
-        private DriverUtility _driver = new DriverUtility();
+        private readonly DriverUtility _driver = new DriverUtility();
 
         #endregion
 
@@ -153,7 +153,7 @@ namespace Bandit.ViewModels
             }
         }
 
-        private int _selectedIndex = 0;
+        private int _selectedIndex;
 
         public int SelectedIndex
         {
@@ -233,7 +233,6 @@ namespace Bandit.ViewModels
             else
             {
                 MessageBox.Show("이미 같은 시간에 갱신 예약이 되어 있습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return;
             }
         }
 

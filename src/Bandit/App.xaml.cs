@@ -18,7 +18,6 @@ namespace Bandit
             {
                 MessageBox.Show("프로그램이 이미 실행중입니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
                 Environment.Exit(0);
-                return;
             }
             else
             {

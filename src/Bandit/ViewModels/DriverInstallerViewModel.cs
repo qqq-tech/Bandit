@@ -14,11 +14,11 @@ namespace Bandit.ViewModels
     {
         #region ::Fields::
 
+        private readonly Version _selectedVersion;
+
         private DriverInstallerState _state = DriverInstallerState.Start;
 
         private DriverUtility _driver;
-
-        private Version _selectedVersion;
 
         private string _tempPath;
 
@@ -51,7 +51,7 @@ namespace Bandit.ViewModels
             }
         }
 
-        private double _progressValue = 0.0f;
+        private double _progressValue;
 
         public double ProgressValue
         {
@@ -93,15 +93,15 @@ namespace Bandit.ViewModels
             }
             else if (_state == DriverInstallerState.Check)
             {
-                await CheckAsync();
+                await CheckAsync().ConfigureAwait(false);
             }
             else if (_state == DriverInstallerState.Download)
             {
-                await DownloadAsync();
+                await DownloadAsync().ConfigureAwait(false);
             }
             else if (_state == DriverInstallerState.Decompress)
             {
-                await DecompressAsync();
+                await DecompressAsync().ConfigureAwait(false);
             }
             else if (_state == DriverInstallerState.Complete)
             {
@@ -145,7 +145,7 @@ namespace Bandit.ViewModels
             });
 
             task.Start();
-            await task;
+            await task.ConfigureAwait(false);
         }
 
         private async Task DownloadAsync()
@@ -174,7 +174,7 @@ namespace Bandit.ViewModels
             });
 
             task.Start();
-            await task;
+            await task.ConfigureAwait(false);
         }
 
         private async Task DecompressAsync()
@@ -199,7 +199,7 @@ namespace Bandit.ViewModels
             });
 
             task.Start();
-            await task;
+            await task.ConfigureAwait(false);
         }
 
         #endregion

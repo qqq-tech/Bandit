@@ -6,6 +6,7 @@ using Bandit.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Input;
@@ -17,11 +18,11 @@ namespace Bandit.ViewModels
     {
         #region ::Fields::
 
-        private Reports _reports;
+        private readonly Reports _reports;
 
-        private Timer _timer = new Timer();
+        private readonly Timer _timer = new Timer();
 
-        private List<string> _postCaches = new List<string>();
+        private readonly List<string> _postCaches = new List<string>();
 
         #endregion
 
@@ -83,7 +84,9 @@ namespace Bandit.ViewModels
             get
             {
                 if (Account.Instance.Profile.Name == null)
+                {
                     Account.Instance.Profile.Name = "로그인이 필요합니다";
+                }
 
                 return Account.Instance.Profile.Name;
             }
@@ -102,7 +105,7 @@ namespace Bandit.ViewModels
             }
             set
             {
-                Account.Instance.IsInitialized = true;
+                Account.Instance.IsInitialized = value;
                 RaisePropertyChanged();
             }
         }
@@ -126,7 +129,6 @@ namespace Bandit.ViewModels
             else
             {
                 MessageBox.Show("로그아웃을 하셔야만 설정을 변경할 수 있습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return;
             }
         }
 
@@ -164,7 +166,9 @@ namespace Bandit.ViewModels
             if (Account.Instance.IsInitialized)
             {
                 if (MessageBox.Show("정말 로그아웃 하시겠습니까?", "Bandit", MessageBoxButton.OKCancel, MessageBoxImage.Question) != MessageBoxResult.OK)
+                {
                     return;
+                }
 
                 // 계정 정보를 초기화한다.
                 Account.Instance = new Account();
@@ -203,7 +207,9 @@ namespace Bandit.ViewModels
             foreach (string post in posts)
             {
                 if (_postCaches.Contains(post))
+                {
                     continue;
+                }
 
                 await band.CheckAttendanceAsync(post);
                 _postCaches.Add(post);
@@ -222,7 +228,7 @@ namespace Bandit.ViewModels
             foreach (DateTime time in Settings.Instance.ReservedTimes)
             {
                 // 소수점 이하 자리를 버리기 위해 버림 함수 사용.
-                if (Math.Truncate(DateTime.Now.TimeOfDay.TotalMinutes) == time.TimeOfDay.TotalMinutes)
+                if ((int)Math.Truncate(DateTime.Now.TimeOfDay.TotalMinutes) == (int)time.TimeOfDay.TotalMinutes)
                 {
                     List<string> posts = await band.GetFeedAsync();
 
@@ -254,7 +260,8 @@ namespace Bandit.ViewModels
                 if (MessageBox.Show("소프트웨어 사용에 대한 면책조항\n\n" +
                     "본 소프트웨어는 Selenium 프로젝트를 이용한 웹 자동화 테스트를 위한 용도로 개발되었으며, 다른 용도로의 사용은 전혀 고려하지 않았습니다. " +
                     "또한 소프트웨어를 이용함으로써 생길 수 있는 모든 법적 문제의 책임은 사용자에게 있습니다. " +
-                    "개발자는 오직 소프트웨어의 소스코드로 인해 발생한 문제에만 책임을 집니다.", "Bandit", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                    "개발자는 오직 소프트웨어의 소스코드로 인해 발생한 문제에만 책임을 집니다.\n" +
+                    "위 면책조항에 동의하고 작업을 시작하시려면 '예'를, 거부하시려면 '아니오'를 선택해주세요.", "Bandit", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                 {
                     return;
                 }

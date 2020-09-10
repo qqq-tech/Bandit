@@ -47,8 +47,8 @@ namespace Bandit.Utilities
 
         #region ::Fields::
 
-        private ChromeDriverService _driverService = null;
-        private ChromeDriver _driver = null;
+        private ChromeDriverService _driverService;
+        private ChromeDriver _driver;
         private WebDriverWait _wait;
 
         #endregion
@@ -83,18 +83,18 @@ namespace Bandit.Utilities
 
         #endregion
 
-        #region ::Constructors::
-
-        public BandUtility()
-        {
-
-        }
-
-        #endregion
-
         #region ::General::
 
-        public void KillProcess()
+        public void KillCurrentDriver()
+        {
+            if (IsRunning)
+            {
+                // 크롬 드라이버 프로세스를 종료한다.
+                Process.GetProcessById(_driverService.ProcessId).Kill();
+            }
+        }
+
+        public void KillDrivers()
         {
             Process[] processList = Process.GetProcessesByName("chromedriver.exe");
 
@@ -112,7 +112,7 @@ namespace Bandit.Utilities
                 {
                     try
                     {
-                        KillProcess();
+                        KillDrivers();
 
                         // 드라이버 서비스를 초기화한다.
                         string driverPath = Path.Combine(Directory.GetCurrentDirectory(), "chromedriver.exe");
@@ -179,8 +179,7 @@ namespace Bandit.Utilities
                     {
                         Reports.Instance.AddReportWithDispatcher(ReportType.Information, $"사용자의 컴퓨터에 설치된 크롬과 크롬 드라이버가 호환되지 않습니다. {ex.StackTrace}");
                         MessageBox.Show($"사용자의 컴퓨터에 설치된 크롬과 크롬 드라이버가 호환되지 않습니다. {ex.Message}\r\n{ex.StackTrace}", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
-                        Dispose();
-                        return;
+                        KillCurrentDriver();
                     }
                 }
                 else
@@ -190,7 +189,7 @@ namespace Bandit.Utilities
                 }
             });
             task.Start();
-            await task;
+            await task.ConfigureAwait(false); ;
         }
 
         public void Stop()
@@ -198,26 +197,17 @@ namespace Bandit.Utilities
             if (_driver != null)
             {
                 _driver.Quit();
-                KillProcess();
-                Dispose();
+                KillCurrentDriver();
+                KillDrivers();
                 Reports.Instance.AddReport(ReportType.Information, $"크롬 드라이버가 중지되었습니다.");
             }
             else
             {
-                KillProcess();
-                Dispose();
+                KillCurrentDriver();
+                KillDrivers();
                 Environment.Exit(0);
                 Reports.Instance.AddReport(ReportType.Information, $"크롬 드라이버 중지가 거부되었습니다.");
                 MessageBox.Show("크롬 드라이버가 실행중이지 않아 중지가 불가능합니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        public void Dispose()
-        {
-            if (IsRunning)
-            {
-                // 크롬 드라이버 프로세스를 종료한다.
-                Process.GetProcessById(_driverService.ProcessId).Kill();
             }
         }
 
@@ -240,7 +230,7 @@ namespace Bandit.Utilities
                 _driver.Navigate().GoToUrl(Settings.URL_EMAIL_LOGIN_ID);
 
                 // 아이디 입력을 위한 대리자를 선언 및 초기화한다.
-                Func<IWebDriver, bool> identityTask = new Func<IWebDriver, bool>((web) =>
+                Func<IWebDriver, bool> identityTask = (web) =>
                 {
                     try
                     {
@@ -257,7 +247,7 @@ namespace Bandit.Utilities
                         Reports.Instance.AddReportWithDispatcher(ReportType.Warning, $"ID 입력 필드를 찾을 수 없습니다. {ex.StackTrace}");
                         return false;
                     }
-                });
+                };
 
                 // 아이디 입력 완료 대기.
                 if (!_wait.Until(identityTask))
@@ -273,7 +263,7 @@ namespace Bandit.Utilities
                 }
 
                 // 비밀번호 입력을 위한 대리자를 선언 및 초기화한다.
-                Func<IWebDriver, bool> passwordTask = new Func<IWebDriver, bool>((web) =>
+                Func<IWebDriver, bool> passwordTask = (web) =>
                 {
                     try
                     {
@@ -290,7 +280,7 @@ namespace Bandit.Utilities
                         Reports.Instance.AddReportWithDispatcher(ReportType.Warning, $"ID 입력 필드를 찾을 수 없습니다. {ex.StackTrace}");
                         return false;
                     }
-                });
+                };
 
                 // 비밀번호 입력 완료 대기.
                 if (!_wait.Until(passwordTask))
@@ -321,7 +311,7 @@ namespace Bandit.Utilities
                 }
             });
             task.Start();
-            await task;
+            await task.ConfigureAwait(false); ;
 
             return task.Result;
         }
@@ -340,7 +330,7 @@ namespace Bandit.Utilities
                 bool result = false;
 
                 // PIN 입력을 위한 대리자를 선언 및 초기화한다.
-                Func<IWebDriver, bool> pinTask = new Func<IWebDriver, bool>((web) =>
+                Func<IWebDriver, bool> pinTask = (web) =>
                 {
                     try
                     {
@@ -361,25 +351,25 @@ namespace Bandit.Utilities
                         Reports.Instance.AddReportWithDispatcher(ReportType.Warning, $"PIN 입력 필드를 찾을 수 없습니다. {ex.StackTrace}");
                         return false;
                     }
-                });
+                };
 
                 if (!_wait.Until(pinTask))
                 {
                     return false;
                 }
 
-                Func<IWebDriver, bool> pinValidTask = new Func<IWebDriver, bool>((IWebDriver Web) =>
+                Func<IWebDriver, bool> pinValidTask = (web) =>
                 {
                     try
                     {
-                        IWebElement element = Web.FindElement(By.Id("errorMessage"));
+                        IWebElement element = web.FindElement(By.Id("errorMessage"));
                         return false;
                     }
                     catch (NoSuchElementException)
                     {
                         return true;
                     }
-                });
+                };
 
                 // PIN 인증 여부 확인.
                 try
@@ -415,7 +405,7 @@ namespace Bandit.Utilities
                 }
             });
             task.Start();
-            await task;
+            await task.ConfigureAwait(false); ;
 
             return task.Result;
         }
@@ -437,7 +427,7 @@ namespace Bandit.Utilities
 
                 _driver.Navigate().GoToUrl(Settings.URL_BAND);
 
-                Func<IWebDriver, bool> profileImageTask = new Func<IWebDriver, bool>((web) =>
+                Func<IWebDriver, bool> profileImageTask = (web) =>
                 {
                     try
                     {
@@ -465,7 +455,7 @@ namespace Bandit.Utilities
                         MessageBox.Show("프로필 소스를 가져올 수 없습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
                         return false;
                     }
-                });
+                };
 
                 if (_wait.Until(profileImageTask))
                 {
@@ -500,7 +490,7 @@ namespace Bandit.Utilities
                         _driver.Navigate().GoToUrl(Settings.URL_FEEDS_PAGE);
                     }
 
-                    Func<IWebDriver, HtmlDocument> postTask = new Func<IWebDriver, HtmlDocument>((web) =>
+                    Func<IWebDriver, HtmlDocument> postTask = (web) =>
                     {
                         try
                         {
@@ -516,7 +506,7 @@ namespace Bandit.Utilities
                             MessageBox.Show("새 글 피드 소스를 가져올 수 없습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
                             return null;
                         }
-                    });
+                    };
 
                     // 로딩 대기.
                     HtmlDocument document = _wait.Until(postTask);
@@ -549,7 +539,7 @@ namespace Bandit.Utilities
                 }
             });
             task.Start();
-            await task;
+            await task.ConfigureAwait(false); ;
 
             return task.Result;
         }
@@ -573,7 +563,7 @@ namespace Bandit.Utilities
 
                     _driver.Navigate().GoToUrl(url);
 
-                    Func<IWebDriver, HtmlDocument> postTask = new Func<IWebDriver, HtmlDocument>((web) =>
+                    Func<IWebDriver, HtmlDocument> postTask = (web) =>
                     {
                         try
                         {
@@ -589,7 +579,7 @@ namespace Bandit.Utilities
                             MessageBox.Show("게시글 소스를 가져올 수 없습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
                             return null;
                         }
-                    });
+                    };
 
                     // 로딩 대기.
                     HtmlDocument document = _wait.Until(postTask);
@@ -610,7 +600,7 @@ namespace Bandit.Utilities
                     }
 
                     // 출석 체크를 위한 대리자를 선언 및 초기화한다.
-                    Func<IWebDriver, bool> attendanceTask = new Func<IWebDriver, bool>((web) =>
+                    Func<IWebDriver, bool> attendanceTask = (web) =>
                     {
                         try
                         {
@@ -627,7 +617,7 @@ namespace Bandit.Utilities
                             Reports.Instance.AddReportWithDispatcher(ReportType.Warning, $"ID 입력 필드를 찾을 수 없습니다. {ex.StackTrace}");
                             return false;
                         }
-                    });
+                    };
 
                     // 출석 체크 완료 대기.
                     if (!_wait.Until(attendanceTask))
@@ -640,7 +630,7 @@ namespace Bandit.Utilities
                 }
             });
             task.Start();
-            await task;
+            await task.ConfigureAwait(false); ;
         }
 
         #endregion

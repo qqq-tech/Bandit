@@ -22,7 +22,7 @@
                      materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0" materialDesign:HintAssist.FloatingScale="0.50" FontSize="24" 
                      Text="{Binding Pin, Mode=OneWayToSource}"/>
             <Button Style="{StaticResource MaterialDesignFlatButton}" Foreground="LimeGreen" Margin="0 4 0 0"
-                    Command="{Binding CertificateCommand}">인증</Button>
+                    Command="{Binding CertifyCommand}">인증</Button>
         </StackPanel>
     </Grid>
 </UserControl>

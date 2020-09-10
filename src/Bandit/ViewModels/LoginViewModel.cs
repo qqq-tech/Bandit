@@ -14,11 +14,11 @@ namespace Bandit.ViewModels
     /// <summary>
     /// 로그인 작업과 관련된 상호작용을 처리합니다.
     /// </summary>
-    internal class LoginViewModel : ViewModelBase
+    internal class LoginViewModel : ViewModelBase, IDisposable
     {
         #region ::Fields::
 
-        private BandUtility _bandUtility;
+        private readonly BandUtility _bandUtility;
 
         #endregion
 
@@ -87,7 +87,7 @@ namespace Bandit.ViewModels
             }
         }
 
-        private bool _isOpenDialog = false;
+        private bool _isOpenDialog;
 
         /// <summary>
         /// 대화상자가 열려있는지에 대한 여부를 지정합니다.
@@ -141,9 +141,9 @@ namespace Bandit.ViewModels
 
         #endregion
 
-        #region ::Login Methods::
+        #region ::Login & Certify::
 
-        private bool Validate(string identity, SecureString password)
+        private bool Validate()
         {
             // 이메일 유효성 검사.
             if (!IsValidEmailAddress(Identity))
@@ -174,14 +174,16 @@ namespace Bandit.ViewModels
             Dialog = new ProgressDialog();
             IsOpenDialog = true;
 
-            if (!Validate(Identity, Password))
+            if (!Validate())
             {
                 IsOpenDialog = false;
                 return;
             }
 
             if (!_bandUtility.IsRunning)
+            {
                 await _bandUtility.StartAsync();
+            }
 
             IntPtr privateString = Marshal.SecureStringToCoTaskMemUnicode(Password);
             var result = await _bandUtility.LoginAsync(Identity, Marshal.PtrToStringUni(privateString));
@@ -223,7 +225,7 @@ namespace Bandit.ViewModels
         /// <summary>
         /// PIN 인증 작업을 수행합니다.
         /// </summary>
-        private async void Certificate()
+        private async void Certify()
         {
             Dialog = new ProgressDialog();
             bool result = await _bandUtility.CertifyAsync(Identity, Pin);
@@ -232,13 +234,11 @@ namespace Bandit.ViewModels
             {
                 Dialog = new PinInputDialog();
                 MessageBox.Show("PIN이 일치하지 않거나 알 수 없는 오류가 발생하였습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return;
             }
             else
             {
                 Dialog = new CompleteDialog();
                 MessageBox.Show("로그인이 완료되었습니다!", "Bandit", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
             }
         }
 
@@ -256,14 +256,23 @@ namespace Bandit.ViewModels
             }
         }
 
-        private ICommand _certificateCommand;
+        private ICommand _certifyCommand;
 
-        public ICommand CertificateCommand
+        public ICommand CertifyCommand
         {
             get
             {
-                return (_certificateCommand) ?? (_certificateCommand = new DelegateCommand(Certificate));
+                return (_certifyCommand) ?? (_certifyCommand = new DelegateCommand(Certify));
             }
+        }
+
+        #endregion
+
+        #region ::IDisopsable Members::
+
+        public void Dispose()
+        {
+            ((IDisposable)Password).Dispose();
         }
 
         #endregion
