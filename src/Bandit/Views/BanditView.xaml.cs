@@ -34,7 +34,7 @@ namespace Bandit.Views
 
         private void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("프로그램을 트레이로 전환하시겠습니까?", "Pomodoro", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            MessageBoxResult result = MessageBox.Show("프로그램을 트레이로 전환하시겠습니까?", "Pomodoro", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.Yes)
             {
@@ -43,7 +43,7 @@ namespace Bandit.Views
 
                 e.Cancel = true; // Cancel window closing.
             }
-            else
+            else if (result == MessageBoxResult.No)
             {
                 if (BandUtility.Instance.IsRunning)
                 {
@@ -51,6 +51,10 @@ namespace Bandit.Views
                 }
 
                 BandUtility.Instance.KillProcess();
+            }
+            else
+            {
+                e.Cancel = true;
             }
         }
     }
