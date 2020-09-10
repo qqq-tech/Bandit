@@ -73,7 +73,7 @@ namespace Bandit
 
             string latest = GetWebContents(Settings.URL_BANDIT_LATEST_VERSION);
 
-            return string.Equals(current, latest);
+            return latest.Contains(current);
         }
 
         protected override void OnStartup(StartupEventArgs e)
