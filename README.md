@@ -54,18 +54,14 @@
 
 ## TO-DO
  * 한 게시물에서 여러개의 출석 체크를 처리하기.
- * 여러 게시물이 동시에 입력될 경우에 제일 최근에 작성된 게시물의 출석만 처리되는 오류를 해결하기.
- * 로그인과 로그아웃 기능, 새 글 피드 불러오기 기능, 출석 체크 기능 등의 메소드들을 비동기 처리하기.
- * 트레이 아이콘 전환 기능 추가하기.
- * 코드 최적화 및 주석 정리하기.
- * 추가적인 예외 경우 처리하기.
 
-## Open-source License
-본 레포지토리의 모든 소스 코드는 MIT 라이선스에 의거하여 자유롭게 사용이 가능합니다. (단, 본 레포지토리에서 이용된 제 3자 오픈소스 프로젝트들은 각 프로젝트에 부여된 라이선스를 기반으로 사용이 가능합니다.)
+## Open-source Software Notice
+본 레포지토리의 모든 소스 코드는 MIT 라이선스에 의거하여 자유롭게 사용이 가능합니다. (단, 본 레포지토리에서 사용된 제 3자 오픈소스 프로젝트의 경우 각 프로젝트의 고유 라이선스를 따라주시기 바랍니다.) 
 
  * __DotNetSeleniumExtras.WaitHelpers__ - Unknown License
  * __DotNetZip.Semverd__ - Microsoft Public License(MS-PL)
  * __HtmlAgilityPack__ - MIT License
+ * __markdig__ - BSD 2-Clause "Simplified" License
  * __MaterialDesignThemes__ - MIT License
  * __MaterialDesignColors__ - MIT License
  * __Newtonsoft.Json__ - MIT License
