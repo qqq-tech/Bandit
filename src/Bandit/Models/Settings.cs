@@ -48,7 +48,7 @@ namespace Bandit.Models
         /// <summary>
         /// 버전 파일의 경로입니다.
         /// </summary>
-        public static readonly string PATH_VERSION = @".\version.dat";
+        public static readonly string PATH_VERSION = @".\data\version.dat";
 
         /// <summary>
         /// 크롬 드라이버 실행 파일의 경로입니다.

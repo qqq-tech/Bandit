@@ -1,6 +1,7 @@
 ﻿using Bandit.Models;
 using Bandit.Utilities;
 using Bandit.Views;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -64,16 +65,33 @@ namespace Bandit
 
         private bool IsLatestVersion()
         {
+            // 현재 버전 정보 가져오기.
             if (!File.Exists(Settings.PATH_VERSION))
             {
                 return true;
             }
 
-            string current = FileUtility.ReadTextFile(Settings.PATH_VERSION, Encoding.UTF8);
+            Version currentVersion = Version.Parse(FileUtility.ReadTextFile(Settings.PATH_VERSION, Encoding.UTF8));
 
-            string latest = GetWebContents(Settings.URL_BANDIT_LATEST_VERSION);
+            // 최신 버전 정보 가져오기.
+            var latestJson = JObject.Parse(GetWebContents(Settings.URL_BANDIT_LATEST_VERSION));
 
-            return latest.Contains(current);
+            if (!latestJson.ContainsKey("version"))
+            {
+                MessageBox.Show("잘못된 버전 정보입니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
+                Environment.Exit(0);
+            }
+
+            Version latestVersion = Version.Parse(latestJson["version"].ToString());
+
+            bool result = false;
+
+            if (currentVersion == latestVersion)
+            {
+                result = true;
+            }
+
+            return result;
         }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -96,12 +114,17 @@ namespace Bandit
             // 업데이트 존재 여부 확인.
             if (!IsLatestVersion())
             {
-                UpdateView updateView = new UpdateView();
-                updateView.Show();
+                MessageBoxResult result =  MessageBox.Show("새로운 업데이트가 발견되었습니다. 업데이트 정보를 확인하시겠습니까?", "Bandit", MessageBoxButton.YesNo, MessageBoxImage.Information);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    UpdateView updateView = new UpdateView();
+                    updateView.ShowDialog();
+                    Environment.Exit(0);
+                }
             }
 
             base.OnStartup(e);
-
             Settings.Instance = Settings.Deserialize(Settings.PATH_SETTINGS);
         }
 
