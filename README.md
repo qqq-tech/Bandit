@@ -14,6 +14,7 @@
 
 ## Screenshots
 ![Bandit](./image/bandit.png)
+![Bandit](./image/guide.png)
 
 ## Install
 [GitHub Releases](https://github.com/junimiso04/Bandit/releases)을(를) 통해 Bandit의 최신 릴리즈를 다운로드하실 수 있습니다.
