@@ -71,27 +71,35 @@ namespace Bandit
                 return true;
             }
 
-            Version currentVersion = Version.Parse(FileUtility.ReadTextFile(Settings.PATH_VERSION, Encoding.UTF8));
-
-            // 최신 버전 정보 가져오기.
-            var latestJson = JObject.Parse(GetWebContents(Settings.URL_BANDIT_LATEST_VERSION));
-
-            if (!latestJson.ContainsKey("version"))
+            try
             {
-                MessageBox.Show("잘못된 버전 정보입니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
-                Environment.Exit(0);
+                Version currentVersion = Version.Parse(FileUtility.ReadTextFile(Settings.PATH_VERSION, Encoding.UTF8));
+
+                // 최신 버전 정보 가져오기.
+                var latestJson = JObject.Parse(GetWebContents(Settings.URL_BANDIT_LATEST_VERSION));
+
+                if (!latestJson.ContainsKey("version"))
+                {
+                    MessageBox.Show("잘못된 버전 정보입니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Environment.Exit(0);
+                }
+
+                Version latestVersion = Version.Parse(latestJson["version"].ToString());
+
+                bool result = false;
+
+                if (currentVersion >= latestVersion)
+                {
+                    result = true;
+                }
+
+                return result;
             }
-
-            Version latestVersion = Version.Parse(latestJson["version"].ToString());
-
-            bool result = false;
-
-            if (currentVersion == latestVersion)
+            catch (Exception ex)
             {
-                result = true;
+                MessageBox.Show($"버전 검사를 할 수 없습니다. {ex}", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
+                return true;
             }
-
-            return result;
         }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -124,15 +132,14 @@ namespace Bandit
                 }
             }
 
-            base.OnStartup(e);
             Settings.Instance = Settings.Deserialize(Settings.PATH_SETTINGS);
+            base.OnStartup(e);
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
-            base.OnExit(e);
-
             Settings.Instance.Serialize(Settings.PATH_SETTINGS);
+            base.OnExit(e);
         }
     }
 }

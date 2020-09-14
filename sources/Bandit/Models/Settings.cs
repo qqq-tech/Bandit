@@ -58,17 +58,17 @@ namespace Bandit.Models
         /// <summary>
         /// 밴딧 버전 히스토리 파일의 URL 주소입니다.
         /// </summary>
-        public static readonly string URL_BANDIT_HISTORY = "https://raw.githubusercontent.com/junimiso04/Bandit/master/history/HISTORY.md";
+        public static readonly string URL_BANDIT_HISTORY = "https://raw.githubusercontent.com/junimiso04/Bandit/master/contents/HISTORY.md";
 
         /// <summary>
         /// 밴딧 최신 버전 히스토리 파일의 URL 주소입니다.
         /// </summary>
-        public static readonly string URL_BANDIT_HISTORY_LATEST = "https://raw.githubusercontent.com/junimiso04/Bandit/master/history/HISTORY_LATEST";
+        public static readonly string URL_BANDIT_HISTORY_LATEST = "https://raw.githubusercontent.com/junimiso04/Bandit/master/contents/HISTORY_LATEST";
 
         /// <summary>
         /// 밴딧의 최신 릴리스 버전을 가져올 수 있는 URL 주소입니다.
         /// </summary>
-        public static readonly string URL_BANDIT_LATEST_VERSION = "https://raw.githubusercontent.com/junimiso04/Bandit/master/history/LATEST";
+        public static readonly string URL_BANDIT_LATEST_VERSION = "https://raw.githubusercontent.com/junimiso04/Bandit/master/contents/LATEST";
 
         /// <summary>
         /// 밴딧 릴리스 페이지의 형식입니다. string.Format() 메소드를 이용하여 버전 정보를 입력한 후 사용하십시오.
