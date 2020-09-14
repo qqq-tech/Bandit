@@ -6,7 +6,6 @@ using Bandit.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Input;
@@ -130,6 +129,12 @@ namespace Bandit.ViewModels
             {
                 MessageBox.Show("로그아웃을 하셔야만 설정을 변경할 수 있습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
+        }
+
+        private void ShowInformation()
+        {
+            InformationView informationView = new InformationView();
+            informationView.ShowDialog();
         }
 
         #endregion
@@ -342,6 +347,16 @@ namespace Bandit.ViewModels
             get
             {
                 return (_settingsCommand) ?? (_settingsCommand = new DelegateCommand(ShowSettings));
+            }
+        }
+
+        private ICommand _informationCommand;
+
+        public ICommand InformationCommand
+        {
+            get
+            {
+                return (_informationCommand) ?? (_informationCommand = new DelegateCommand(ShowInformation));
             }
         }
 

@@ -24,7 +24,7 @@ namespace Bandit.Views
         private void InitializeNotifyIcon()
         {
             _trayIcon.Text = "Bandit";
-            _trayIcon.Icon = Properties.Resources.bandit; // 아이콘 등록.
+            _trayIcon.Icon = Properties.Resources.bandit_icon; // 아이콘 등록.
             _trayIcon.Click += delegate // 더블 클릭 이벤트 등록.
             {
                 _trayIcon.Visible = false;

@@ -63,10 +63,36 @@ namespace Bandit.Properties {
         /// <summary>
         ///   (아이콘)과(와) 유사한 System.Drawing.Icon 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
-        public static System.Drawing.Icon bandit {
+        public static System.Drawing.Icon bandit_icon {
             get {
-                object obj = ResourceManager.GetObject("bandit", resourceCulture);
+                object obj = ResourceManager.GetObject("bandit_icon", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        public static System.Drawing.Bitmap bandit_image {
+            get {
+                object obj = ResourceManager.GetObject("bandit_image", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   {\rtf1\ansi\deff0\nouicompat{\fonttbl{\f0\fnil\fcharset129 \&apos;b1\&apos;bc\&apos;b8\&apos;b2;}{\f1\fnil\fcharset2 Symbol;}}
+        ///{\colortbl ;\red0\green0\blue255;}
+        ///{\*\generator Riched20 10.0.19041}\viewkind4\uc1 
+        ///\pard\f0\fs22 All source codes of this software are freely available under the MIT license. (For third-party open-source projects, however, used in this software, please follow the licenses of each project.)\par
+        ///\par
+        ///\b\fs36 Open Source Softwares\b0\fs22\par
+        ///
+        ///\pard{\pntext\f1\&apos;B7\tab}{\*\pn\pnlvlblt\pnf1\pninden[나머지 문자열은 잘림]&quot;;과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string open_source_software_notice {
+            get {
+                return ResourceManager.GetString("open_source_software_notice", resourceCulture);
             }
         }
     }

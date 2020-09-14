@@ -38,7 +38,7 @@
                 <!--Grid Column Definitions of Top Panel-->
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
-                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="120"/>
                 </Grid.ColumnDefinitions>
 
                 <!--Panel for Profile-->
@@ -60,9 +60,13 @@
                 
                 <!--Control Panel-->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Button Style="{StaticResource MaterialDesignIconForegroundButton}" Margin="10" VerticalAlignment="Center" Width="40" Height="40"
+                    <Button Style="{StaticResource MaterialDesignIconForegroundButton}" Margin="10" VerticalAlignment="Center" Width="38" Height="38"
                             Command="{Binding SettingsCommand}">
                         <materialDesign:PackIcon Kind="Settings" Width="16" Height="16" Opacity=".40"/>
+                    </Button>
+                    <Button Style="{StaticResource MaterialDesignIconForegroundButton}" Margin="10" VerticalAlignment="Center" Width="38" Height="38"
+                            Command="{Binding InformationCommand}">
+                        <materialDesign:PackIcon Kind="InfoOutline" Width="16" Height="16" Opacity=".40"/>
                     </Button>
                 </StackPanel>
             </Grid>
