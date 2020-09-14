@@ -1,5 +1,4 @@
 ﻿using Bandit.Models;
-using Markdig;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -20,7 +19,7 @@ namespace Bandit.Views
 
         public void InitializeHistory()
         {
-            string history = Markdown.ToPlainText(GetWebContents(Settings.URL_BANDIT_HISTORY_LATEST));
+            string history = GetWebContents(Settings.URL_BANDIT_HISTORY_LATEST);
             HistoryTextBlock.Text = history;
         }
 
