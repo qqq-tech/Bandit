@@ -2,6 +2,13 @@
 [![GitHub](https://img.shields.io/github/license/junimiso04/Bandit?style=flat-square)](https://github.com/junimiso04/Bandit/blob/master/LICENSE)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/junimiso04/Bandit?logo=GitHub&logoColor=White&style=flat-square)](https://github.com/junimiso04/Bandit/releases/latest)
 
+```
+※ NOTICE
+2020년 9월 15일 부로 더이상의 추가 업데이트는 제공되지 않을 예정입니다.
+만약 네이버 밴드 시스템의 업데이트로 인해 프로그램을 사용할 수 없게 된다면
+본 레포지토리를 포크한 후 직접 소스코드를 수정해서 사용해주시기 바랍니다.
+```
+
 | |master|develop|
 |------|------|------|
 |Code Quality(Codacy)|[![Codacy branch grade](https://img.shields.io/codacy/grade/b3afd7c34f1d4cc8a8e8092015731f92/master?logo=Codacy&logoColor=white&style=flat-square)](https://app.codacy.com/manual/junimiso04/Bandit/dashboard)|[![Codacy branch grade](https://img.shields.io/codacy/grade/b3afd7c34f1d4cc8a8e8092015731f92/develop?logo=Codacy&logoColor=white&style=flat-square)](https://app.codacy.com/manual/junimiso04/Bandit/dashboard)|
@@ -57,9 +64,6 @@
  1-4. 골라낸 게시글들에서 출석 체크를 담당하는 input 태그를 감지하여 클릭함으로서 출석 작업을 완료합니다.
  
 ```
-
-## TO-DO
- * 한 게시물에서 여러개의 출석 체크를 처리하기.
 
 ## Open-source Software Notice
 본 레포지토리의 모든 소스 코드는 MIT 라이선스에 의거하여 자유롭게 사용이 가능합니다. (단, 본 레포지토리에서 사용된 제 3자 오픈소스 프로젝트의 경우 각 프로젝트의 고유 라이선스를 따라주시기 바랍니다.) 
