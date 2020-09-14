@@ -38,8 +38,7 @@ namespace Bandit.Views
 
         private void OnDownloadButtonClick(object sender, RoutedEventArgs e)
         {
-            string url = string.Format(Settings.URL_BANDIT_RELEASE, GetWebContents(Settings.URL_BANDIT_LATEST_VERSION));
-            Process.Start(url);
+            Process.Start(Settings.URL_BANDIT_RELEASE_LATEST);
         }
     }
 }

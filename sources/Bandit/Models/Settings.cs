@@ -73,7 +73,7 @@ namespace Bandit.Models
         /// <summary>
         /// 밴딧 릴리스 페이지의 형식입니다. string.Format() 메소드를 이용하여 버전 정보를 입력한 후 사용하십시오.
         /// </summary>
-        public static readonly string URL_BANDIT_RELEASE = "https://github.com/junimiso04/Bandit/releases/tag/{0}";
+        public static readonly string URL_BANDIT_RELEASE_LATEST = "https://github.com/junimiso04/Bandit/releases/latest";
 
         /// <summary>
         /// 크롬 드라이버의 다운로드 가능한 버전 리스트의 URL 주소입니다.
