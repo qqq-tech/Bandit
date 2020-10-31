@@ -80,7 +80,7 @@
  * __Selenium.WebDriver.Chromedriver__ - Unlicense
  
 ## Contributers
-__Main Developer(+Maintainer)__ - 손형준 / Syri(aka junimiso04)
+__Main Developer(+Maintainer)__ - June(aka junimiso04)
 
 ## Contact
 본 레포지토리의 소스 코드에 대한 문의사항이나 릴리즈 된 프로그램에 대한 버그 정보를 제공하시려면 GitHub Issues(이)나 아래의 이메일을 이용해주시기 바랍니다.
