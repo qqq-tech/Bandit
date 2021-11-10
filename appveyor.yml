@@ -37,7 +37,7 @@ for:
     release: Bandit Release v$(appveyor_build_version)
     auth_token:
       secure: rZmLXCATPmL0i2iCF1NAWBxFSGAwR1mL4Rm5HZ0LLR6RTqIUeCSQxNOSwf/N1fsd
-    repository: junimiso04/Bandit
+    repository: handbros/Bandit
     artifact: deploy
     draft: false
     force_update: false
