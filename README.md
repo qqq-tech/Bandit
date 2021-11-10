@@ -35,6 +35,11 @@
  * 사용자의 컴퓨터에 .NET Framework 4.8 런타임이 설치되어 있지 않을 경우.
 
 ## Usage
+```
+※ 주의사항
+윈도우의 절전 기능을 꺼주셔야 원활한 사용이 가능합니다. 절전 기능은 '윈도우 설정 > 시스템 > 전원 및 절전 > 절전 모드'에서 설정할 수 있습니다.
+```
+
 ※ 밴딧을 사용하기 위해서는 사용자의 컴퓨터에 Chrome 브라우저가 설치되어 있어야합니다. 크롬이 설치되어 있지 않을 경우에는 이 [링크](https://www.google.com/intl/en/chrome/)를 통해 크롬을 설치할 수 있습니다.
 
 1. 크롬을 실행한 뒤, 주소창에 __chrome://version/__ 을(를) 입력하여 사용자의 컴퓨터에 설치된 크롬의 버전을 확인합니다.
@@ -80,9 +85,9 @@
  * __Selenium.WebDriver.Chromedriver__ - Unlicense
  
 ## Contributers
-__Main Developer(+Maintainer)__ - June(aka junimiso04)
+__Main Developer(+Maintainer)__ - June(handbros)
 
 ## Contact
 본 레포지토리의 소스 코드에 대한 문의사항이나 릴리즈 된 프로그램에 대한 버그 정보를 제공하시려면 GitHub Issues(이)나 아래의 이메일을 이용해주시기 바랍니다.
 
- * E-Mail : junimiso04@naver.com
+ * E-Mail : hexstudio16@gmail.com
