@@ -2,6 +2,13 @@
 [![GitHub](https://img.shields.io/github/license/junimiso04/Bandit?style=flat-square)](https://github.com/junimiso04/Bandit/blob/master/LICENSE)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/junimiso04/Bandit?logo=GitHub&logoColor=White&style=flat-square)](https://github.com/junimiso04/Bandit/releases/latest)
 
+```
+※ NOTICE
+2020년 9월 15일 부로 더이상의 추가 업데이트는 제공되지 않을 예정입니다.
+만약 네이버 밴드 시스템의 업데이트로 인해 프로그램을 사용할 수 없게 된다면
+본 레포지토리를 포크한 후 직접 소스코드를 수정해서 사용해주시기 바랍니다.
+```
+
 | |master|develop|
 |------|------|------|
 |Code Quality(Codacy)|[![Codacy branch grade](https://img.shields.io/codacy/grade/b3afd7c34f1d4cc8a8e8092015731f92/master?logo=Codacy&logoColor=white&style=flat-square)](https://app.codacy.com/manual/junimiso04/Bandit/dashboard)|[![Codacy branch grade](https://img.shields.io/codacy/grade/b3afd7c34f1d4cc8a8e8092015731f92/develop?logo=Codacy&logoColor=white&style=flat-square)](https://app.codacy.com/manual/junimiso04/Bandit/dashboard)|
@@ -28,6 +35,11 @@
  * 사용자의 컴퓨터에 .NET Framework 4.8 런타임이 설치되어 있지 않을 경우.
 
 ## Usage
+```
+※ 주의사항
+윈도우의 절전 기능을 꺼주셔야 원활한 사용이 가능합니다. 절전 기능은 '윈도우 설정 > 시스템 > 전원 및 절전 > 절전 모드'에서 설정할 수 있습니다.
+```
+
 ※ 밴딧을 사용하기 위해서는 사용자의 컴퓨터에 Chrome 브라우저가 설치되어 있어야합니다. 크롬이 설치되어 있지 않을 경우에는 이 [링크](https://www.google.com/intl/en/chrome/)를 통해 크롬을 설치할 수 있습니다.
 
 1. 크롬을 실행한 뒤, 주소창에 __chrome://version/__ 을(를) 입력하여 사용자의 컴퓨터에 설치된 크롬의 버전을 확인합니다.
@@ -58,9 +70,6 @@
  
 ```
 
-## TO-DO
- * 한 게시물에서 여러개의 출석 체크를 처리하기.
-
 ## Open-source Software Notice
 본 레포지토리의 모든 소스 코드는 MIT 라이선스에 의거하여 자유롭게 사용이 가능합니다. (단, 본 레포지토리에서 사용된 제 3자 오픈소스 프로젝트의 경우 각 프로젝트의 고유 라이선스를 따라주시기 바랍니다.) 
 
@@ -76,9 +85,9 @@
  * __Selenium.WebDriver.Chromedriver__ - Unlicense
  
 ## Contributers
-__Main Developer(+Maintainer)__ - 손형준 / Syri(aka junimiso04)
+__Main Developer(+Maintainer)__ - June(handbros)
 
 ## Contact
 본 레포지토리의 소스 코드에 대한 문의사항이나 릴리즈 된 프로그램에 대한 버그 정보를 제공하시려면 GitHub Issues(이)나 아래의 이메일을 이용해주시기 바랍니다.
 
- * E-Mail : junimiso04@naver.com
+ * E-Mail : hexstudio16@gmail.com
