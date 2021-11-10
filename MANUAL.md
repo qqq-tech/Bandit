@@ -1,7 +1,5 @@
 # Bandit 매뉴얼
 
-## 0. 면책사항
-
 ## 1. 다운로드
 [GitHub Releases](https://github.com/handbros/Bandit/releases/latest) 페이지를 통해 최신 버전의 프로그램을 다운로드하고 압축을 해제합니다.
 
