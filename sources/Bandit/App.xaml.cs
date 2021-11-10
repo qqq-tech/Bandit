@@ -63,47 +63,11 @@ namespace Bandit
             }
         }
 
-        private bool IsLatestVersion()
-        {
-            // 현재 버전 정보 가져오기.
-            if (!File.Exists(Settings.PATH_VERSION))
-            {
-                return true;
-            }
-
-            try
-            {
-                Version currentVersion = Version.Parse(FileUtility.ReadTextFile(Settings.PATH_VERSION, Encoding.UTF8));
-
-                // 최신 버전 정보 가져오기.
-                var latestJson = JObject.Parse(GetWebContents(Settings.URL_BANDIT_LATEST_VERSION));
-
-                if (!latestJson.ContainsKey("version"))
-                {
-                    MessageBox.Show("잘못된 버전 정보입니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
-                    Environment.Exit(0);
-                }
-
-                Version latestVersion = Version.Parse(latestJson["version"].ToString());
-
-                bool result = false;
-
-                if (currentVersion >= latestVersion)
-                {
-                    result = true;
-                }
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"버전 검사를 할 수 없습니다. {ex}", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
-                return true;
-            }
-        }
-
         protected override void OnStartup(StartupEventArgs e)
         {
+            // 처리되지 않은 예외 발생 시.
+            AppDomain.CurrentDomain.UnhandledException += OnUnhandledExceptionOccurs;
+
             // 인터넷 사용 가능 여부 확인.
             if (!IsInternetConnected())
             {
@@ -119,21 +83,62 @@ namespace Bandit
                 Environment.Exit(0);
             }
 
-            // 업데이트 존재 여부 확인.
-            if (!IsLatestVersion())
+            if (!File.Exists(Settings.PATH_SETTINGS))
             {
-                MessageBoxResult result =  MessageBox.Show("새로운 업데이트가 발견되었습니다. 업데이트 정보를 확인하시겠습니까?", "Bandit", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                Settings settings = Settings.Instance;
+            }
+            else
+            {
+                Settings.Instance = Settings.Deserialize(Settings.PATH_SETTINGS);
+            }
 
-                if (result == MessageBoxResult.Yes)
+            try
+            {
+                // Install latest driver.
+                if (Settings.Instance.IsFirst && MessageBox.Show("최신 버전의 크롬 드라이버를 설치하시겠습니까? 이 메시지는 첫 실행시에만 나타납니다.", "Bandit", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
-                    UpdateView updateView = new UpdateView();
-                    updateView.ShowDialog();
-                    Environment.Exit(0);
+                    Settings.Instance.DriverVersion = new DriverUtility().GetLatestVersion();
+
+                    DriverInstallerView installer = new DriverInstallerView(Settings.Instance.DriverVersion);
+                    installer.Show();
+                }
+            }
+            finally
+            {
+                Settings.Instance.IsFirst = false;
+                Settings.Instance.Serialize(Settings.PATH_SETTINGS);
+
+            }
+            base.OnStartup(e);
+        }
+
+        private void OnUnhandledExceptionOccurs(object sender, UnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show($"처리되지 않은 예외가 발생했습니다.\r\n{((Exception)e.ExceptionObject).StackTrace}", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            MessageBox.Show($"확인을 누르시면 오류가 발생한 크롬과 크롬드라이버를 강제 종료합니다. 크롬을 사용하고 계셨다면 작업을 저장해주십시오.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            // Kill chrome drivers.
+            Process[] drivers = Process.GetProcessesByName("chromedriver.exe");
+
+            if (drivers.Length > 0)
+            {
+                foreach (Process process in drivers)
+                {
+                    process.Kill();
                 }
             }
 
-            Settings.Instance = Settings.Deserialize(Settings.PATH_SETTINGS);
-            base.OnStartup(e);
+            // Kill chromes.
+            Process[] chromes = Process.GetProcessesByName("chrome.exe");
+
+            if (chromes.Length > 0)
+            {
+                foreach (Process process in chromes)
+                {
+                    process.Kill();
+                }
+            }
         }
 
         protected override void OnExit(ExitEventArgs e)

@@ -43,7 +43,7 @@
 
                 <!--Panel for Profile-->
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="10 0 0 0">
-                    <materialDesign:Chip Content="{Binding ProfileName}" IsDeletable="{Binding IsAccountInitialized}" ToolTip="{Binding ProfileName}" DeleteToolTip="해당 계정에서 로그아웃 합니다.">
+                    <materialDesign:Chip Content="{Binding ProfileName}" IsDeletable="{Binding IsAccountInitialized}" ToolTip="{Binding ProfileName}" DeleteToolTip="해당 계정에서 로그아웃 합니다." Cursor="Hand">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Click">
                                 <i:InvokeCommandAction Command="{Binding AccountLoginCommand}"/>
@@ -52,9 +52,6 @@
                                 <i:InvokeCommandAction Command="{Binding AccountLogoutCommand}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
-                        <materialDesign:Chip.Icon>
-                            <Image Source="{Binding ProfileImageUrl, Converter={StaticResource UriToBitmapImageConverter}}" />
-                        </materialDesign:Chip.Icon>
                     </materialDesign:Chip>
                 </StackPanel>
                 

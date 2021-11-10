@@ -305,8 +305,6 @@ namespace Bandit.Utilities
                     Account.Instance.Profile.Name = identity;
                     Account.Instance.IsInitialized = true;
 
-                    LoadProfileImage();
-
                     return LoginResult.Succeed;
                 }
             });
@@ -399,8 +397,6 @@ namespace Bandit.Utilities
                     Account.Instance.Profile.Name = identity;
                     Account.Instance.IsInitialized = true;
 
-                    LoadProfileImage();
-
                     return true;
                 }
             });
@@ -408,60 +404,6 @@ namespace Bandit.Utilities
             await task.ConfigureAwait(false);
 
             return task.Result;
-        }
-
-        #endregion
-
-        #region ::Profile::
-
-        public void LoadProfileImage()
-        {
-            if (Account.Instance.IsInitialized)
-            {
-                if (!IsRunning)
-                {
-                    Reports.Instance.AddReportWithDispatcher(ReportType.Caution, $"프로필 가져오기 작업이 거부되었습니다.");
-                    MessageBox.Show("크롬 드라이버가 동작하고 있지 않습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-
-                _driver.Navigate().GoToUrl(Settings.URL_BAND);
-
-                Func<IWebDriver, bool> profileImageTask = (web) =>
-                {
-                    try
-                    {
-                        new WebDriverWait(_driver, TimeSpan.FromSeconds(Settings.Instance.TimeOutLimit)).Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("//span[@class='profileInner']")));
-
-                        HtmlDocument document = new HtmlDocument();
-                        document.LoadHtml(web.PageSource);
-
-                        HtmlNode profileImage = document.DocumentNode.SelectSingleNode("//span[@class='profileInner']");
-
-                        if (profileImage.SelectSingleNode("//img") != null)
-                        {
-                            profileImage = profileImage.SelectSingleNode("//img");
-                            Account.Instance.Profile.ImageUrl = new Uri(profileImage.Attributes["src"].Value);
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                    catch (NoSuchElementException ex)
-                    {
-                        Reports.Instance.AddReportWithDispatcher(ReportType.Caution, $"프로필 소스를 가져올 수 없습니다. {ex.StackTrace}");
-                        MessageBox.Show("프로필 소스를 가져올 수 없습니다.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return false;
-                    }
-                };
-
-                if (_wait.Until(profileImageTask))
-                {
-                    Reports.Instance.AddReportWithDispatcher(ReportType.Complete, $"프로필을 성공적으로 불러왔습니다.");
-                }
-            }
         }
 
         #endregion
@@ -590,7 +532,7 @@ namespace Bandit.Utilities
                     }
 
                     // 출석 목록 파싱.
-                    HtmlNode[] attendanceNodes = document.DocumentNode.SelectSingleNode("//div[@class='postMain']").SelectNodes("//div[@data-viewname='DPostAttendanceCheckView']").ToArray();
+                    HtmlNode[] attendanceNodes = document.DocumentNode.SelectSingleNode("//div[@class='postMain']").SelectNodes("//div[@data-viewname='DPostAttendanceCheckView']").ToArray() ?? new HtmlNode[] {};
                     List<string> attendeeIdList = new List<string>();
 
                     for (int index = 0; index < attendanceNodes.Length; index++)

@@ -1,9 +1,11 @@
 ﻿using Bandit.Utilities;
+using Bandit.Views;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Windows;
 
 namespace Bandit.Models
 {
@@ -120,6 +122,11 @@ namespace Bandit.Models
         #region ::Properties::
 
         /// <summary>
+        /// 프로그램이 처음 실행되었는지를 판단합니다.
+        /// </summary>
+        public bool IsFirst { get; set; }
+
+        /// <summary>
         /// 사용자가 현재 사용중인 크롬 드라이버의 버전입니다.
         /// </summary>
         public Version DriverVersion { get; set; }
@@ -163,7 +170,8 @@ namespace Bandit.Models
         /// </summary>
         public Settings()
         {
-            DriverVersion = new DriverUtility().GetLatestVersion();
+            IsFirst = true;
+            DriverVersion = new Version(85, 0, 4183, 8300);
             IsAutomatic = true;
             RefreshInterval = 5;
             UseHeadless = true;

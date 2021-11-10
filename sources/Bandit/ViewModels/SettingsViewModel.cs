@@ -210,7 +210,6 @@ namespace Bandit.ViewModels
             {
                 DriverInstallerView installer = new DriverInstallerView(SelectedVersion);
                 installer.ShowDialog();
-                installer.Close();
 
                 CurrentVersion = SelectedVersion;
             }
