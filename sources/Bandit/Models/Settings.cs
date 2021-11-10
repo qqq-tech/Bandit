@@ -177,7 +177,7 @@ namespace Bandit.Models
             UseHeadless = true;
             UseConsole = false;
             ReservedTimes = new List<DateTime>();
-            TimeOutLimit = 10;
+            TimeOutLimit = 20;
         }
 
         #endregion

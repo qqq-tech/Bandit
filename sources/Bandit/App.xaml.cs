@@ -114,7 +114,7 @@ namespace Bandit
 
         private void OnUnhandledExceptionOccurs(object sender, UnhandledExceptionEventArgs e)
         {
-            MessageBox.Show($"처리되지 않은 예외가 발생했습니다.\r\n{((Exception)e.ExceptionObject).StackTrace}", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"처리되지 않은 예외가 발생했습니다.\r\n{((Exception)e.ExceptionObject).Source}\r\n{((Exception)e.ExceptionObject).Message}\r\n{((Exception)e.ExceptionObject).InnerException}\r\n{((Exception)e.ExceptionObject).StackTrace}", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
 
             MessageBox.Show($"확인을 누르시면 오류가 발생한 크롬과 크롬드라이버를 강제 종료합니다. 크롬을 사용하고 계셨다면 작업을 저장해주십시오.", "Bandit", MessageBoxButton.OK, MessageBoxImage.Error);
 

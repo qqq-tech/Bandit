@@ -54,8 +54,13 @@ namespace Bandit.Utilities
         public static string[] MultipleParse(this string text, string start, string end)
         {
             string source = text;
-            string[] result = { null };
+            string[] result = {  };
             int Count = 0;
+
+            if (string.IsNullOrEmpty(source))
+            {
+                return result;
+            }
 
             while (source.IndexOf(start) > -1)
             {
